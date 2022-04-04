@@ -12,6 +12,11 @@ from Button import *
 
 trees = [] #Lista de arvores, lista de objetos da classe TREE
 
+#Variables
+WindowSize = [800, 600]
+
+
+
 def main():
     print("Hello Worldings")
     menu = GraphWin("MENU",800,600)
@@ -34,9 +39,6 @@ def main():
     #update():
        # time.sleep(1)
 
-main()   
-
-
 def init():
     #Criar janela
     #Iniciar myroot na posiçao inicial
@@ -45,16 +47,15 @@ def init():
 
 
 def update():
-    
-    
-    
     draw()
     return 0
     
+
     
 def draw():
     #draw shit
     return 0
        
+
        
 main()
