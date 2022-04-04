@@ -13,23 +13,40 @@ from Button import *
 trees = [] #Lista de arvores, lista de objetos da classe TREE
 
 #Variables
-WindowSize = [800, 600]
-
-
+WindowWidth = 800
+WindowHeight = 600
+TabSize = 100
+ButtonsVerticalSpacement = 100
+ButtonsHeight = 20
+ObstaclesSize = 5 #radius
 
 def main():
     print("Hello Worldings")
-    menu = GraphWin("MENU",800,600)
-    play_button = Button(menu,Point(50,50), 20, 100,"Jogar")
-        
+    win = GraphWin("GAME", WindowWidth, WindowHeight)
+    
+    LeftTab = Rectangle(Point(0,WindowHeight), Point(TabSize,0))
+    RightTab = Rectangle(Point(WindowWidth - TabSize, WindowHeight), Point(WindowWidth, 0))
+    LeftTab.setFill("light grey")
+    RightTab.setFill("light grey")
+    LeftTab.draw(win)
+    RightTab.draw(win)
+    play_button = Button(win, Point(TabSize/2, 50), (2/3)*TabSize, ButtonsHeight, "Play")
+    reset_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Reset")
+    
     while (1):
-        mouse = menu.getMouse()
-        if (play_button.clicked(mouse)):
-            
-            menu.close()
-    
+        mouse = win.getMouse()
+        if play_button.clicked(mouse):
+            NumObstacles = int(input("Quantos obstáculos? ")) #getText later
+            click = win.getMouse() 
+            for i in range(NumObstacles):    
+                if TabSize < click.getX() < WindowWidth - TabSize: #condition to be inside game zone
+                    obstacle = Circle(Point(click.getX(),click.getY()), ObstaclesSize)  #class for obstacles later
+                    obstacle.setFill("green")
+                    obstacle.draw(win)
+                    
+        win.close()
 
-    
+  
     
     
     

@@ -6,7 +6,7 @@ Created on Mon Apr  4 18:06:07 2022
 """
 from graphics import*
 class Button:
-    def __init__(self,menu,center, width, height, label):
+    def __init__(self, win, center, width, height, label):
         w,h = width/2.0, height/2.0
         x,y = center.getX(), center.getY()
         self.xmax, self.xmin = x+w, x-w
@@ -15,9 +15,9 @@ class Button:
         p2 = Point(self.xmax, self.ymax)
         self.rect = Rectangle(p1,p2)
         self.rect.setFill('lightgray')
-        self.rect.draw(menu)
+        self.rect.draw(win)
         self.label = Text(center, label)
-        self.label.draw(menu)
+        self.label.draw(win)
         self.deactivate()
 
     def clicked(self, p):
