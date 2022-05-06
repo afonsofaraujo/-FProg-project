@@ -20,6 +20,7 @@ TabSize = 100
 ButtonsVerticalSpacement = 100
 ButtonsHeight = 20
 ObstaclesSize = 5 #radius
+Buttons =[] #append Buttons on main
 
 def main():
     print("Hello Worldings")
@@ -32,9 +33,9 @@ def main():
     Dock.setFill("light grey")
     LeftTab.draw(win)
     RightTab.draw(win)
-    play_button = Button(win, Point(TabSize/2, 50), (2/3)*TabSize, ButtonsHeight, "Play")
-    reset_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Reset")
-    quit_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*3), (2/3)*TabSize, ButtonsHeight, "Quit")
+    play_button = Button(win, Point(TabSize/2, 50), (2/3)*TabSize, ButtonsHeight, "Play", playmode1())
+    reset_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Reset", ClearBoard())
+    quit_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*3), (2/3)*TabSize, ButtonsHeight, "Quit", Quit())
     run_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*4), (2/3)*TabSize, ButtonsHeight, "Run")
     reset_button.deactivate()
     
@@ -43,21 +44,15 @@ def main():
         global myrobot
         myrobot = Harve(WindowWidth/2, WindowHeight, 100, 1, win)
         
-    def event(reset_button, quit_button, play_button, win):
-        click = win.checkMouse()
-        if click:
-            if play_button.clicked(click):
-                init(win)
-                play_button.deactivate()
-                playmode1(win)
-            elif reset_button.clicked(click):
-                ClearBoard()
-            elif quit_button.clicked(click):
-                quit_button.deactivate()
-                win.close()
-        else:
-            return 0
-        
+    def CheckButtons(win):
+        mouse = win.checkMouse()
+        for Button in Buttons:
+            if Button.Clicked(mouse):
+                Button.onClick()
+                return true
+    #If CheckButtons(win) não corre o update
+            
+            
     def IsInside(x,y):
         return (TabSize < x < (WindowWidth - TabSize))
     
@@ -67,6 +62,10 @@ def main():
         Dock.undraw()
         obs1.Delete()
         myrobot.Delete()
+    
+    def Quit():
+        win.close()
+        
         
     def Update():
         time.sleep(0.01)
@@ -94,7 +93,10 @@ def main():
                     run_button.deactivate()
                     while (abs(myrobot.getX()-obs1.getX()) > 20 or abs(myrobot.getY()-obs1.getY()) > 20):
                             Update()
-                            event(reset_button, quit_button, play_button, win)
+                            if reset_button.clicked(click):
+                                ClearBoard()
+                                break
+                            
                     print("done")
                     break
     while True:
