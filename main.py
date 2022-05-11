@@ -6,12 +6,15 @@ Created on Mon Apr  4 16:00:15 2022
 """
 
 from graphics import *
-from Robot import *
+from Harve import *
 from Tree import *
-from Button import *
+from Button_modified import *
+from math import *
 import time
 
-trees = [] #Lista de arvores, lista de objetos da classe TREE
+Trees = [] #Lista de arvores, lista de objetos da classe TREE
+
+Buttons = []
 
 #Variables
 WindowWidth = 800
@@ -24,49 +27,44 @@ ObstaclesSize = 5 #radius
 
 def main():
     
-    def Playmode1(win):
-        while True:
-            CheckButtons(win)                      #opportunity to quit or reset
-            click1 = win.checkMouse()
-            if click1:
-                CheckButtons(win)
+    def Playmode1():
+        init(win)
+        play_button.deactivate()
+        print("DEBUG1")
+        click1 = win.checkMouse()
+        while click1:
+            CheckButtons(win)         #opportunity to quit or reset
+            print("DEBUG2")
+            if click1 != None:
                 if IsInside(click1.getX(), click1.getY()):
-                    global obs1
-                    obs1 = Tree(click1.getX(),click1.getY(),win)
-                    Obstacles.append(obs1)
-                    print(obs1.getX(),obs1.getY())
+                    print("DEBUG3")
+                    Trees.append(Tree(click1.getX(), click1.getY(), win))
                     reset_button.activate()
                     break
+            print("DEBUG4")
         while True:
             click2 = win.checkMouse()   
             if click2:
+                run_button.activate()
                 CheckButtons(win)
-                if run_button.clicked(click2):
-                    CheckButtons(win)
-                    run_button.deactivate()
-                    while (abs(myrobot.getX()-obs1.getX()) > 20 or abs(myrobot.getY()-obs1.getY()) > 20):
-                            Update()
-                            if reset_button.clicked(click):   #cancel the animation
-                                ClearBoard()
-                                break
-                            
-                    print("done")
-                    break
                 
     def init(win):
         Dock.draw(win)
+        RightCharger.draw(win)
+        LeftCharger.draw(win)
         global myrobot
         myrobot = Harve(WindowWidth/2, WindowHeight, 100, 1, win)
         
     def CheckButtons(win):
-        mouse = win.checkMouse()
-        for Button in Buttons:
-            if Button.Clicked(mouse):
-                Button.onClick()
-                return true
-    #If CheckButtons(win) não corre o update
-            
-            
+        while True:
+            mouse = win.checkMouse()
+            if mouse:
+                for Button in Buttons:
+                    if Button.clicked(mouse):
+                        Button.onClick()
+                        return True
+                break
+    
     def IsInside(x,y):
         return (TabSize < x < (WindowWidth - TabSize))
     
@@ -74,24 +72,46 @@ def main():
         reset_button.deactivate()
         play_button.activate()
         Dock.undraw()
-        obs1.Delete()
+        for tree in Trees:    
+            tree.Delete()
         myrobot.Delete()
     
     def Quit():
         win.close()
         
-        
-    def Update():
-        time.sleep(0.01)
-        myrobot.Seek(obs1.getX(), obs1.getY())
-        print(abs(myrobot.getX()-obs1.getX()),"     ",abs(myrobot.getY()-obs1.getY()))
-        
+    def Run():
+        CheckButtons(win)
+        run_button.deactivate()
+        while True:
+            CheckButtons(win)
+            Update(myrobot.Sonar(Trees).getX(), myrobot.Sonar(Trees).getY())
+            myrobot.Sonar(Trees)
+            if myrobot.Sonar(Trees) == 1:
+                break
+        while True:
+            Update(myrobot.Gocharge().getX(), myrobot.Gocharge().getY())
+            if sqrt((myrobot.getX() - myrobot.Gocharge().getX())**2 + (myrobot.getY() - myrobot.Gocharge().getY())**2):
+                print('done')
+                break
+                  
+                
 
+        
+    def Update(obsX, obsY):       #Harve module after this
+        time.sleep(0.01)
+        myrobot.Seek(obsX, obsY)
+
+        
     print("Hello Worldings")
+    global win
     win = GraphWin("GAME", WindowWidth, WindowHeight, autoflush=False)
     LeftTab = Rectangle(Point(0,WindowHeight), Point(TabSize,0))
     RightTab = Rectangle(Point(WindowWidth - TabSize, WindowHeight), Point(WindowWidth, 0))
     Dock = Circle(Point(WindowWidth/2,WindowHeight), 50)
+    RightCharger = Circle(Point(WindowWidth - TabSize - 20, 20), 30)
+    LeftCharger = Circle(Point(TabSize + 20, 20), 30)
+    RightCharger.setFill('yellow')
+    LeftCharger.setFill('yellow')
     LeftTab.setFill("light grey")
     RightTab.setFill("light grey")
     Dock.setFill("light grey")
@@ -100,15 +120,12 @@ def main():
     play_button = Button(win, Point(TabSize/2, 50), (2/3)*TabSize, ButtonsHeight, "Play", Playmode1)
     reset_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Reset", ClearBoard)
     quit_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*3), (2/3)*TabSize, ButtonsHeight, "Quit", Quit)
-    run_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*4), (2/3)*TabSize, ButtonsHeight, "Run", )
+    run_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*4), (2/3)*TabSize, ButtonsHeight, "Run", Run)
     reset_button.deactivate()
-    global Buttons
-    Buttons = [quit_button, reset_button, play_button]
-    global Obstacles
-    Obstacles = []
+    Buttons = [quit_button, reset_button, play_button, run_button]
     
 
     while True:
-            CheckButtons(win)
+        CheckButtons(win)
     
 main()

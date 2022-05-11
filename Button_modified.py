@@ -47,15 +47,17 @@ class Button():
         self.rect.setWidth(1)
         self.active = False
         
-    def Clicked(self, mouse):
+    def clicked(self, mouse):
         """ if button is active this will determine if there was a click
             (pt) within the button """       
-        return (self.active and self.xmin <= mouse.getX() <= self.xmax and self.ymin <= mouse.getY() <= self.ymax)
+        return (self.active and 
+                self.xmin <= mouse.getX() <= self.xmax and
+                self.ymin <= mouse.getY() <= self.ymax)
 
     def getLabel(self):
         """ returns the label text """
         return self.label.getText()
     
     
-    def OnClick(self):
+    def onClick(self):
         self.handler()
