@@ -26,6 +26,7 @@ class Harve:
         self.PosX = self.PosX + dx
         self.PosY = self.PosY + dy
         self.Draw()
+        Sonar()
 
     def Seek(self, obsX, obsY):
         deltax = abs(self.PosX - obsX)
@@ -41,7 +42,25 @@ class Harve:
         
         self.Move(self.xvel, self.yvel)
         
+    def Sonar(self): #returns distances to objects in the map in straight lines
         
+        for i in Obstacles:
+            if abs(self.PosX-i.getX()) < 20 or abs(self.PosY-i.getY()) < 20):
+                Grab()
+        return 0
+
+    def Grab():
+        time.sleep(2)
+        obs1.Undraw()
+        del obs1
+    
+    def GoCharge():
+        
+        if (abs(self.PosX - TabSize)) < (abs(self.PosX - (WindowWidth -TabSize))): 
+            Seek(rightcharger)
+        else:
+            Seek(leftcharger)    
+
     def Draw(self):
         self.body.draw(self.Window) 
             

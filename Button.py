@@ -57,5 +57,5 @@ class Button():
         return self.label.getText()
     
     
-    def onClick(self):
+    def OnClick(self):
         self.handler()
