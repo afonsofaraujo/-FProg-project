@@ -21,11 +21,11 @@ class Harve:
         self.yvel = 0
         
     def Move(self, dx, dy):
-        self.Undraw()
+
         self.body.move(dx, dy)
         self.PosX = self.PosX + dx
         self.PosY = self.PosY + dy
-        self.Draw()
+
 
     def Seek(self, obsX, obsY):
         deltax = abs(self.PosX - obsX)
@@ -42,29 +42,31 @@ class Harve:
         self.Move(self.xvel, self.yvel)
         
     def Sonar(self, Obstacles):                 #returns the closest object
-        max_distance = 0
+        min_distance = 1000
         for Obstacle in Obstacles:
             distance = sqrt((self.PosX - Obstacle.getX())**2 + (self.PosY - Obstacle.getY())**2)
-            if distance > max_distance:
-                max_distance = distance
-                max_obstacle = Obstacle
-        return max_obstacle
-        if max_distance < 20:                   #it stoped to grab   
-            Grab(Obstacle)
+            if distance < min_distance:
+                min_distance = distance
+                min_obstacle = Obstacle
+        return min_obstacle
+
+    def Stop(self, Obstacles):                   #checks the need to stop and returns 1
+                                                #the input is a list
+        min_distance = 1000
+        for Obstacle in Obstacles:
+            distance = sqrt((self.PosX - Obstacle.getX())**2 + (self.PosY - Obstacle.getY())**2)
+            if distance < min_distance:
+                min_distance = distance
+                min_obstacle = Obstacle
+        if min_distance < 20:                   #it stoped to grab   
+            Grab(Obstacles)
+            return 1
 
     def Grab(self, Obstacle):
         time.sleep(2)
         Obstacle.Undraw()
         del Obstacle
         
-    def GoCharge(self):                         #decides which charger is the closest
-        
-        if (abs(self.PosX - TabSize)) < (abs(self.PosX - (WindowWidth - TabSize))):
-            rightcharger = Point(WindowWidth - TabSize - 20, 20)
-            return rightcharger
-        else:
-            leftcharger = Point(TabSize + 20, 20)
-            return leftcharger
             
     def Draw(self):
         self.body.draw(self.Window) 
