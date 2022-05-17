@@ -8,6 +8,7 @@ Created on Mon Apr  4 16:00:15 2022
 from graphics import *
 from Harve import *
 from Tree import *
+from Charger import *
 from Button_modified import *
 from math import *
 import time
@@ -20,16 +21,15 @@ Chargers = []
 WindowWidth = 800
 WindowHeight = 600
 TabSize = 100
-ButtonsVerticalSpacement = 100
-ButtonsHeight = 20
+ButtonsVerticalSpacement = 50
+ButtonsHeight = 30
 ObstaclesSize = 5 #radius
   #append Buttons on main
 win = GraphWin("GAME", WindowWidth, WindowHeight, autoflush=False)
 LeftTab = Rectangle(Point(0,WindowHeight), Point(TabSize,0))
 RightTab = Rectangle(Point(WindowWidth - TabSize, WindowHeight), Point(WindowWidth, 0))
 Dock = Circle(Point(WindowWidth/2,WindowHeight), 50)
-RightCharger = Circle(Point(WindowWidth - TabSize - 20, 20), 30)
-LeftCharger = Circle(Point(TabSize + 20, 20), 30)
+
 
 def main():
     
@@ -40,7 +40,7 @@ def main():
         init(win)
         play_button.deactivate()
         print("DEBUG1")
-        CheckButtons(win)
+        CheckButtons()
         while True:
             click1 = win.checkMouse()
             if click1 != None:
@@ -52,95 +52,103 @@ def main():
                     reset_button.activate()
                     run_button.activate()
                     break
-        print("DEBUG4")
         while True:
             click2 = win.checkMouse()   
             if click2:
+                print("DEBUG4")
                 run_button.activate()
-                CheckButtons(win)
+                CheckButtons()
                 break
                 
     def init(win):
         Dock.draw(win)
-        RightCharger.draw(win)
-        LeftCharger.draw(win)
+        RightCharger = Charger(WindowWidth - TabSize - 20, 20, win)
+        LeftCharger = Charger(TabSize + 20, 20, win)
+        Chargers =[RightCharger, LeftCharger]
+        
         global myrobot
         myrobot = Harve(WindowWidth/2, WindowHeight, 100, 1, win)
         
-    def CheckButtons(win):
-        while True:
-            mouse = win.checkMouse()
-            if mouse:
-                for Button in Buttons:
-                    if Button.clicked(mouse):
-                        Button.onClick()
-                        return True
-                break
+    def CheckButtons():
+        mouse = win.checkMouse()
+        if mouse != None:
+            for Button in Buttons:
+                if Button.clicked(mouse):
+                    Button.onClick()
+                    return True
     
     def IsInside(x,y):
         return (TabSize < x < (WindowWidth - TabSize))
     
-    def ClearBoard():
+    def Reset():
         
         reset_button.deactivate()
         play_button.activate()
+        run_button.deactivate()
         Dock.undraw()
+        myrobot.Undraw()
+        myrobot.Delete()
         for Charger in Chargers:
             Charger.undraw()
+            Charger.Delete()
         Chargers.clear()
-        for Tree in Trees:    
+        for Tree in Trees:
+            Tree.Undraw()
             Tree.Delete()
-        myrobot.Delete()
-    
+        Trees.clear()
+        
     def Quit():
         win.close()
         
     def Run():
-
+        
+        print('entrou no run')
         run_button.deactivate()
         while True:
-            CheckButtons(win)
-            Update(myrobot.Sonar(Trees).getX(), myrobot.Sonar(Trees).getY())
-            myrobot.Sonar(Trees)
-            if myrobot.Stop(myrobot.Sonar(Trees)) == 1:
+            CheckButtons()
+            Update(myrobot.Sonar(Trees).GetX(), myrobot.Sonar(Trees).GetY())        #the Get method is in caps because it was created by me in each object type class
+            if myrobot.Stop(Trees) == 1:
+                myrobot.Grab(myrobot.Sonar(Trees))
                 break
+            print('entrou no loop de update')
 #starts the new movement to go to the charger
         while True:
-            Update(myrobot.Sonar(Chargers).getX(), myrobot.Sonar(Chargers).getY())
-            if myrobot.Stop(myrobot.Sonar(Chargers)) == 1:
+            Update(myrobot.Sonar(Chargers).GetX(), myrobot.Sonar(Chargers).GetY())
+            if myrobot.Stop(Chargers) == 1:
                 print('done')
                 run_button.deactivate()
                 break
+        CheckButtons()
         #finish 
                   
                 
 
         
     def Update(obsX, obsY):       #Harve module after this
+        
+        print('update()')    
         time.sleep(0.01)
         myrobot.Seek(obsX, obsY)
 
         
     print("Hello Worldings")
     
-    RightCharger.setFill('yellow')
-    LeftCharger.setFill('yellow')
     LeftTab.setFill("light grey")
     RightTab.setFill("light grey")
     Dock.setFill("light grey")
     LeftTab.draw(win)
     RightTab.draw(win)
     play_button = Button(win, Point(TabSize/2, 50), (2/3)*TabSize, ButtonsHeight, "Play", Playmode1)
-    reset_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Reset", ClearBoard)
+    reset_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Reset", Reset)
     quit_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*3), (2/3)*TabSize, ButtonsHeight, "Quit", Quit)
     run_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*4), (2/3)*TabSize, ButtonsHeight, "Run", Run)
     reset_button.deactivate()
     run_button.deactivate()
     Buttons = [quit_button, reset_button, play_button, run_button]
-    Chargers =[RightCharger, LeftCharger]
+    
     
 
     while True:
-        CheckButtons(win)
+        CheckButtons()
     
 main()

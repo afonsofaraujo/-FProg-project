@@ -25,6 +25,7 @@ class Button():
         pt2 = Point(self.xmax, self.ymax)
 
         self.rect = Rectangle(pt1, pt2)
+        self.rect.setFill("dim gray")
 
         self.label = Text(center,label)
         self.label.setTextColor('lightgrey')

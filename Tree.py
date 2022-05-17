@@ -23,8 +23,8 @@ class Tree:
     def Delete(self):
         del self
         
-    def getX(self):
+    def GetX(self):
         return self.PosX
     
-    def getY(self):
+    def GetY(self):
         return self.PosY
