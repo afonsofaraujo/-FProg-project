@@ -16,15 +16,15 @@ class Tree:
         self.trunk.draw(win)
         self.leaves.draw(win)
         
-    def Undraw(self):
+    def undraw(self):
         self.trunk.undraw() 
         self.leaves.undraw()
                
-    def Delete(self):
+    def delete(self):
         del self
         
-    def GetX(self):
+    def getX(self):
         return self.PosX
     
-    def GetY(self):
+    def getY(self):
         return self.PosY

@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue May 17 11:13:20 2022
+Created on Wed May 25 19:26:59 2022
 
 @author: Afonso Araújo
 """
 
 from graphics import *
-class  Charger:
+class Stone:
     def __init__(self, PosX, PosY, win):
         self.PosX = PosX
         self.PosY = PosY
-        self.body = Rectangle(Point(PosX-20, PosY+20),Point(PosX+20, PosY-20))
-        self.body.setFill('yellow')
+        self.body = Circle(Point(self.PosX, self.PosY), 5)
+        self.body.setFill('darkgray')
         self.body.draw(win)
         
     def undraw(self):
-        self.body.undraw()
+        self.body.undraw() 
                
     def delete(self):
         del self

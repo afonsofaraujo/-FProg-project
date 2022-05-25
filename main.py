@@ -9,6 +9,9 @@ from graphics import *
 from Harve import *
 from Tree import *
 from Charger import *
+from Bush import *
+from Stone import *
+from Grass import *
 from Button_modified import *
 from math import *
 import time
@@ -39,33 +42,27 @@ def main():
     def Playmode1():
         init(win)
         play_button.deactivate()
-        print("DEBUG1")
         CheckButtons()
         while True:
             click1 = win.checkMouse()
             if click1 != None:
-                                           #opportunity to quit or reset
-                print("DEBUG2")
                 if IsInside(click1.getX(), click1.getY()):
-                    print("DEBUG3")
                     Trees.append(Tree(click1.getX(), click1.getY(), win))
                     reset_button.activate()
                     run_button.activate()
+                    CheckButtons()
                     break
-        while True:
-            click2 = win.checkMouse()   
-            if click2:
-                print("DEBUG4")
-                run_button.activate()
-                CheckButtons()
-                break
-                
+       
     def init(win):
         Dock.draw(win)
         RightCharger = Charger(WindowWidth - TabSize - 20, 20, win)
         LeftCharger = Charger(TabSize + 20, 20, win)
-        Chargers =[RightCharger, LeftCharger]
-        
+        Chargers.append(RightCharger)
+        Chargers.append(LeftCharger)
+        global batteryinfo
+        batteryinfo = Text(Point(WindowWidth - TabSize/2, 100), '100 %')
+        batteryinfo.draw(win)
+        batterylabel = Text(Point(WindowWidth - TabSize/2, 100), 'Battery')
         global myrobot
         myrobot = Harve(WindowWidth/2, WindowHeight, 100, 1, win)
         
@@ -86,15 +83,16 @@ def main():
         play_button.activate()
         run_button.deactivate()
         Dock.undraw()
-        myrobot.Undraw()
-        myrobot.Delete()
+        myrobot.undraw()
+        myrobot.delete()
+        batteryinfo.undraw()
         for Charger in Chargers:
             Charger.undraw()
-            Charger.Delete()
+            Charger.delete()
         Chargers.clear()
         for Tree in Trees:
-            Tree.Undraw()
-            Tree.Delete()
+            Tree.undraw()
+            Tree.delete()
         Trees.clear()
         
     def Quit():
@@ -102,19 +100,19 @@ def main():
         
     def Run():
         
-        print('entrou no run')
         run_button.deactivate()
         while True:
             CheckButtons()
-            Update(myrobot.Sonar(Trees).GetX(), myrobot.Sonar(Trees).GetY())        #the Get method is in caps because it was created by me in each object type class
+            Update(myrobot.Sonar(Trees).getX(), myrobot.Sonar(Trees).getY())
             if myrobot.Stop(Trees) == 1:
                 myrobot.Grab(myrobot.Sonar(Trees))
                 break
-            print('entrou no loop de update')
+
 #starts the new movement to go to the charger
         while True:
-            Update(myrobot.Sonar(Chargers).GetX(), myrobot.Sonar(Chargers).GetY())
-            if myrobot.Stop(Chargers) == 1:
+            CheckButtons()
+            Update(myrobot.Sonar(Chargers).getX(), myrobot.Sonar(Chargers).getY())
+            if myrobot.getX() - myrobot.Sonar(Chargers).getX() < 1 and myrobot.getY() - myrobot.Sonar(Chargers).getY() < 1:
                 print('done')
                 run_button.deactivate()
                 break
@@ -126,7 +124,8 @@ def main():
         
     def Update(obsX, obsY):       #Harve module after this
         
-        print('update()')    
+        print('x', obsX,'y', obsY)
+        batteryinfo.setText(str(round(myrobot.getBattery())) +' %')
         time.sleep(0.01)
         myrobot.Seek(obsX, obsY)
 

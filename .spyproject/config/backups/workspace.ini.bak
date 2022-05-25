@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['..\\Desktop\\FProg python\\projectile.py', '..\\Desktop\\FProg python\\ex019 Ficha 9.py', 'Harve.py']
+recent_files = ['..\\Desktop\\FProg python\\ex020 Ficha 10.py', '..\\Desktop\\FProg python\\ex021 Ficha 10.py']
 
 [main]
 version = 0.2.0

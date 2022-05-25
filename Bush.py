@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue May 17 11:13:20 2022
+Created on Wed May 25 19:21:54 2022
 
 @author: Afonso Araújo
 """
-
 from graphics import *
-class  Charger:
+class Bush:
     def __init__(self, PosX, PosY, win):
         self.PosX = PosX
         self.PosY = PosY
-        self.body = Rectangle(Point(PosX-20, PosY+20),Point(PosX+20, PosY-20))
-        self.body.setFill('yellow')
+        self.body = Oval(Point(self.PosX - 4, self.PosY), Point(self.PosX + 4, self.PosY))
+        self.body.setFill('darkgreen')
         self.body.draw(win)
         
     def undraw(self):
-        self.body.undraw()
+        self.body.undraw() 
                
     def delete(self):
         del self
