@@ -12,47 +12,97 @@ from Charger import *
 from Bush import *
 from Stone import *
 from Grass import *
+from PathplanningRRT import *
 from Button_modified import *
 from math import *
 import time
 
-Trees = [] #Lista de arvores, lista de objetos da classe TREE
-Buttons = []
+#Global lists
+Obstacles = []      
+Buttons = []    
 Chargers = []
+Avoid = []
+Avoid_tuple = [] 
 
 #Variables
+
+
+GameMode = 0     #default 0
 WindowWidth = 800
 WindowHeight = 600
 TabSize = 100
 ButtonsVerticalSpacement = 50
 ButtonsHeight = 30
-ObstaclesSize = 5 #radius
-  #append Buttons on main
+ObstaclesSize = 5               #radius
+
 win = GraphWin("GAME", WindowWidth, WindowHeight, autoflush=False)
 LeftTab = Rectangle(Point(0,WindowHeight), Point(TabSize,0))
+LeftTab.setFill("light grey")
 RightTab = Rectangle(Point(WindowWidth - TabSize, WindowHeight), Point(WindowWidth, 0))
+RightTab.setFill("light grey")
 Dock = Circle(Point(WindowWidth/2,WindowHeight), 50)
+Dock.setFill("light grey")
+
 
 
 def main():
-    
-    def handleClick(pt, win):
-        pass
-    
+
     def Playmode1():
         init(win)
-        play_button.deactivate()
+        play1_button.deactivate()
+        GameMode = 1 
         CheckButtons()
         while True:
             click1 = win.checkMouse()
             if click1 != None:
                 if IsInside(click1.getX(), click1.getY()):
-                    Trees.append(Tree(click1.getX(), click1.getY(), win))
+                    Obstacles.append(Tree(click1.getX(), click1.getY(), win))
                     reset_button.activate()
                     run_button.activate()
                     CheckButtons()
                     break
-       
+    
+    def Playmode2():
+        init(win)
+        play2_button.deactivate()
+        GameMode = 2 
+        CheckButtons()
+        
+        #plot objects
+        a = Bush(200, 350, win)
+        b = Bush(620, 140, win)
+        c = Grass(560, 200, win)
+        d = Stone(400, 300, win)
+        e = Stone(300, 450, win)
+        # later this can be generated with random or chaotic function
+        
+        Group = [a,b,c,d,e]
+        
+        for i in Group:
+            Avoid.append(i.getX)
+            Avoid.append(i.getY)
+            
+        Avoid_tuple = [x for x in zip(*[iter(Avoid)]*2)]
+        print(Avoid_tuple)
+        
+        
+        run_button.activate()
+        
+        while run_button.state():
+            click = win.checkMouse()
+            CheckButtons()
+            if click != None:
+                if IsInside(click.getX(),click.getY()):
+                    Obstacles.append(Tree(click.getX(), click.getY(), win))
+                    if len(Obstacles)>2:
+                        reset_button.activate()
+                        run_button.activate()
+                        CheckButtons()
+                        break    #forçar a sair ao terceiro objeto colocado       
+        
+        
+      
+    
     def init(win):
         Dock.draw(win)
         RightCharger = Charger(WindowWidth - TabSize - 20, 20, win)
@@ -61,8 +111,13 @@ def main():
         Chargers.append(LeftCharger)
         global batteryinfo
         batteryinfo = Text(Point(WindowWidth - TabSize/2, 100), '100 %')
+        batteryinfo.setFace('courier')
+        batteryinfo.setSize(10)
         batteryinfo.draw(win)
-        batterylabel = Text(Point(WindowWidth - TabSize/2, 100), 'Battery')
+        batterylabel = Text(Point(WindowWidth - TabSize/2, 80), 'Battery')
+        batterylabel.setFace('courier')
+        batterylabel.setSize(10)
+        batterylabel.draw(win)
         global myrobot
         myrobot = Harve(WindowWidth/2, WindowHeight, 100, 1, win)
         
@@ -73,14 +128,20 @@ def main():
                 if Button.clicked(mouse):
                     Button.onClick()
                     return True
+        if GameMode == 1:
+            run_button.changehandler(Run1())
+        elif GameMode == 2:
+            run_button.changehandler(Run2())
+        else:
+            pass
+            
     
     def IsInside(x,y):
         return (TabSize < x < (WindowWidth - TabSize))
     
     def Reset():
-        
         reset_button.deactivate()
-        play_button.activate()
+        play1_button.activate()
         run_button.deactivate()
         Dock.undraw()
         myrobot.undraw()
@@ -90,64 +151,83 @@ def main():
             Charger.undraw()
             Charger.delete()
         Chargers.clear()
-        for Tree in Trees:
-            Tree.undraw()
-            Tree.delete()
-        Trees.clear()
+        for Obstacle in Obstacles:
+            Obstacle.undraw()
+            Obstacle.delete()
+        Obstacles.clear()
         
     def Quit():
         win.close()
         
-    def Run():
-        
+    def Run1():
         run_button.deactivate()
         while True:
             CheckButtons()
-            Update(myrobot.Sonar(Trees).getX(), myrobot.Sonar(Trees).getY())
-            if myrobot.Stop(Trees) == 1:
-                myrobot.Grab(myrobot.Sonar(Trees))
+            Clock(myrobot.Sonar(Obstacles).getX(), myrobot.Sonar(Obstacles).getY())
+            if myrobot.Stop(Obstacles) == 1:
+                myrobot.Grab(myrobot.Sonar(Obstacles))
                 break
 
-#starts the new movement to go to the charger
+        #starts the new movement to go to the charger
         while True:
             CheckButtons()
-            Update(myrobot.Sonar(Chargers).getX(), myrobot.Sonar(Chargers).getY())
+            Clock(myrobot.Sonar(Chargers).getX(), myrobot.Sonar(Chargers).getY())
             if myrobot.getX() - myrobot.Sonar(Chargers).getX() < 1 and myrobot.getY() - myrobot.Sonar(Chargers).getY() < 1:
-                print('done')
+                print('-----------done-------------')
                 run_button.deactivate()
                 break
         CheckButtons()
         #finish 
-                  
-                
+    def Run2():
+        #aqui é que vai dar buraco
+        
+        #Obstacles tem coisas
+        #Avoid_tuple tem coisas
+        
+        
+        Nodes = []
+        
+        Nodes = pathplaning()   #returns a list of nodes (tuples) to use on Seek()
+                                #ele volta à base logo a posição inicial é a posição final
+        for i in Nodes:
+            while myrobot.getX()!= i.tuple[0] and myrobot.getY() != i.tuple[1]:             #enquanto ainda não estiver lá
+                Clock(i.tuple[0],i.tuple[1])                                                #anda de node em node
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        pass
         
-    def Update(obsX, obsY):       #Harve module after this
-        
-        print('x', obsX,'y', obsY)
-        batteryinfo.setText(str(round(myrobot.getBattery())) +' %')
+    def Clock(obsX, obsY):       #Harve module after this
+        batteryinfo.setText(str(myrobot.getBattery()) +' %')
         time.sleep(0.01)
         myrobot.Seek(obsX, obsY)
 
-        
-    print("Hello Worldings")
-    
-    LeftTab.setFill("light grey")
-    RightTab.setFill("light grey")
-    Dock.setFill("light grey")
     LeftTab.draw(win)
     RightTab.draw(win)
-    play_button = Button(win, Point(TabSize/2, 50), (2/3)*TabSize, ButtonsHeight, "Play", Playmode1)
-    reset_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Reset", Reset)
-    quit_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*3), (2/3)*TabSize, ButtonsHeight, "Quit", Quit)
-    run_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*4), (2/3)*TabSize, ButtonsHeight, "Run", Run)
+    play2_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*5), (2/3)*TabSize, ButtonsHeight, "Mode 2", Playmode2)
+    play1_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*4), (2/3)*TabSize, ButtonsHeight, "Mode 1", Playmode1)
+    reset_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement), (2/3)*TabSize, ButtonsHeight, "Reset", Reset)
+    quit_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Quit", Quit)
+    run_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*3), (2/3)*TabSize, ButtonsHeight, "Run", Run1)
     reset_button.deactivate()
     run_button.deactivate()
-    Buttons = [quit_button, reset_button, play_button, run_button]
+    Buttons = [quit_button, reset_button, play1_button, play2_button, run_button]
     
-    
-
     while True:
         CheckButtons()
-    
-main()
+        
+if __name__ == "__main__":  
+    main()

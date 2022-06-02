@@ -9,7 +9,7 @@ class Bush:
     def __init__(self, PosX, PosY, win):
         self.PosX = PosX
         self.PosY = PosY
-        self.body = Oval(Point(self.PosX - 4, self.PosY), Point(self.PosX + 4, self.PosY))
+        self.body = Oval(Point(self.PosX - 15, self.PosY-10), Point(self.PosX + 15, self.PosY+ 10))
         self.body.setFill('darkgreen')
         self.body.draw(win)
         

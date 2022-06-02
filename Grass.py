@@ -10,7 +10,7 @@ class Grass:
     def __init__(self, PosX, PosY, win):
         self.PosX = PosX
         self.PosY = PosY
-        self.body = Circle(Point(self.PosX, self.PosY), 5)
+        self.body = Circle(Point(self.PosX, self.PosY), 10)
         self.body.setFill('lightgreen')
         self.body.draw(win)
         

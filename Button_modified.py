@@ -59,6 +59,13 @@ class Button():
         """ returns the label text """
         return self.label.getText()
     
+    def changehandler(newhandler):
+        '''change the handler function of a button'''
+        self.handler = newhandler
     
+    def state(self):
+        '''return True if the button is active'''
+        return self.active
+         
     def onClick(self):
         self.handler()
