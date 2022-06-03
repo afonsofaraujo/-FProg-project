@@ -76,14 +76,14 @@ def main():
         e = Stone(300, 450, win)
         # later this can be generated with random or chaotic function
         
-        Group = [a,b,c,d,e]
+        Avoid = [a,b,c,d,e]
         
-        for i in Group:
-            Avoid.append(i.getX)
-            Avoid.append(i.getY)
+        #for i in Group:
+           # Avoid.append(i.getX)
+           # Avoid.append(i.getY)
             
-        Avoid_tuple = [x for x in zip(*[iter(Avoid)]*2)]
-        print(Avoid_tuple)
+        #Avoid_tuple = [x for x in zip(*[iter(Avoid)]*2)]
+        #print(Avoid_tuple)
         
         
         run_button.activate()
@@ -187,7 +187,7 @@ def main():
         
         Nodes = []
         
-        Nodes = pathplaning()   #returns a list of nodes (tuples) to use on Seek()
+        pathplaning()   #returns a list of nodes (tuples) to use on Seek()
                                 #ele volta à base logo a posição inicial é a posição final
         for i in Nodes:
             while myrobot.getX()!= i.tuple[0] and myrobot.getY() != i.tuple[1]:             #enquanto ainda não estiver lá

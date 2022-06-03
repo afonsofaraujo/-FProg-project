@@ -10,7 +10,8 @@ class Stone:
     def __init__(self, PosX, PosY, win):
         self.PosX = PosX
         self.PosY = PosY
-        self.body = Circle(Point(self.PosX, self.PosY), 15)
+        self.radius = 15
+        self.body = Circle(Point(self.PosX, self.PosY), self.radius)
         self.body.setFill('darkgray')
         self.body.draw(win)
         
@@ -25,3 +26,6 @@ class Stone:
     
     def getY(self):
         return self.PosY
+    
+    def radius(self):
+        return self.radius

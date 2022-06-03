@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['main.py', 'Harve.py', 'Bush.py', 'Grass.py', 'Stone.py', 'Tree.py', 'untitled5.py', 'Charger.py', 'Button_modified.py']
+recent_files = ['main.py', 'Harve.py', 'Bush.py', 'Grass.py', 'Stone.py', 'Tree.py', 'Charger.py', 'Button_modified.py', 'untitled5.py', 'PathplanningRRT.py']
 
 [main]
 version = 0.2.0
