@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jun  2 21:32:25 2022
+Created on Sun Jun 12 20:29:46 2022
 
 @author: Afonso Araújo
 """
-
-'''fazer algoritmo com base no RRT que a função path planning devolva um alista de tuples com os nodes escolhidos
-   o input são uma lista de Avoid_tuple ( não sei se vale a pena por em tuple )(é que eles assim têm uma ordem imutável
-   que faz sentido porque são um conjunto de pequenos passos) e os Obstacles. O untitled5 é um RRT do IMT mas é uma beca marado'''
 
 from graphics import *
 from Harve import *
@@ -22,87 +18,69 @@ import time
 
 
 
-def distancia(a, b):
-    d = sqrt((a.getX()-b.getX())**2 + (a.getY()-b.getY())**2)
-    return(d)
-
+def distance(a, b):
+    '''returns the distance between points a and b'''
+    return abs(sqrt((a.getX()-b.getX())**2 + (a.getY()-b.getY())**2))
+    
 class virtualnode:  #posI é o ponto inicial, angulo em radianos, alvo é um ponto, lista de obstáculos
-    def __init__(self, posi, ang, alvo, obstaculo):
+    '''creates a virtual Point around the robot based on a position and angle''' 
+    def __init__(self, posi, ang, goal):
         
-        self.posi = posi
+        self.radius = 10 #vai variar para ver o que acontece
+        self.nodepos = Point(posi.getX + radius*cos(ang),posi.getY + radius*sin(ang)) 
         self.ang = ang
-        self.alvo = alvo
-        self.obstaculo = obstaculo
-
-        a = 0
-        p = 15
+        self.goal = goal
+        self.d = distance(nodepos,alvo)
         
-        while True:
-            (self.posi).move(10*math.cos(ang), 10*math.sin(ang))
-            p -= 1
-            
-            for obst in obstaculo:
-                if distancia(obst, self.posi)<(5 + obst.radius()):
-                    a = 1
-            if a==1 or p==0:
-                return posi
-                break
-            
-        self.d = distancia(posi,alvo)
+    def getX(self):
+        return nodePos.getX()
+        
+    def getY(self):
+        return nodePos.getY()
         
     def getd(self):
         return self.d
-    
-    def getang(self):
-        return self.ang
-          
-    def atualizarposi(self, newposi):
-        self.posi = Point(newposi.getX(),newyposi.getY())
-        
-        
-def pathplanning(Avoid, alvo, pontodesaida): #lista de obstaculos
-    #loop
 
-        a = virtualnode(pontodesaida,0 , Avoid)
-        b = virtualnode(pontodesaida,math.pi/4  , Avoid)
-        c = virtualnode(pontodesaida,math.pi/2 , Avoid)
-        d = virtualnode(pontodesaida,3*math.pi/4 , Avoid)
-        e = virtualnode(pontodesaida,math.pi , Avoid)
-        f = virtualnode(pontodesaida,-3*math.pi/4 , Avoid)
-        g = virtualnode(pontodesaida,-math.pi/2 , Avoid)
-        h = virtualnode(pontodesaida,-math.pi/4, Avoid)
-       
-        
-       
-        
-       
-        
-       
-        
-       '''angulo = 0
-        valnodes = []
-        D = distancia(pontodesaida, alvo)
-        lst=[a,b,c,d,e,f,g,h]
-        
-        T = 0
-        for i in lst:
-            deltad = D-i.getd()
-            if deltad > 0:
-                valnodes.append(i)
-                T+=deltad
-        for i in valnodes:
-            angulo += i.ang()*(D-i.getd())/T
-        return angulo
-    
-        lstfinal
-        pontodesaida = '''
-    
-    
-    
-    
-    
-    
-        return lstfinal
-    def 
   
-    pass
+def pathplanning(Obstacles, goal, startPos): #lista de obstaculos
+    '''returns a list of several points that make the path for the robot from its startPos to goal'''
+    #loop
+    #currentPos é onde está a posição do robot a ser avaliada
+    #startPos é onde ele começa que é invariável
+    #no final do loop a currentPos tem de ser atualizada para passarmos a avaliar a proxima posição
+    #a condição do while serve para parar o loop se estiver proximo do goal
+    localpath = []
+    currentPos = startPos
+    while distance(currentPos, goal)<20:
+        
+        a = virtualnode(currentPos,0, goal)
+        b = virtualnode(currentPos,math.pi/4, goal)
+        c = virtualnode(currentPos,math.pi/2, goal)
+        d = virtualnode(currentPos,3*math.pi/4, goal)
+        e = virtualnode(currentPos,math.pi, goal)
+        f = virtualnode(currentPos,-3*math.pi/4, goal)
+        g = virtualnode(currentPos,-math.pi/2, goal) 
+        h = virtualnode(currentPos,-math.pi/4, goal)
+        
+        Nodes = [a,b,c,d,e,f,g,h]
+        
+        #select nodes
+        for i in Nodes:
+            if i.getd() > distance(currentPos, goal):
+                Nodes.remove(i)
+        for i in Nodes:     
+            for ii in Obstacles:
+                if distance(Point(ii.getX(),ii.getY()),Point(i.getX(),i.getY())) < 2:    #raio da sensibilidade de cada node
+                    Nodes.remove(i)
+        selectednode = Nodes.index(1)  #default
+        mind = 9999
+        for i in Nodes:
+            if i.getd() < mind:
+                selectednode = Nodes.index(i)
+                mind = i.getd
+            elif i.getd() == mind:
+                selectednode = Nodes.index(1)     #em caso de empate
+        
+        currentPos = Point(selectednode.getX(),selectednode.getY())
+        localpath.append(currentPos)
+    return localpath

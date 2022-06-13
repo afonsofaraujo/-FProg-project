@@ -18,16 +18,14 @@ from math import *
 import time
 
 #Global lists
+Obstacles = []
+Goal = []
 Objects = []      
 Buttons = []    
 Chargers = []
-Avoid = []
-Avoid_tuple = [] 
 
 #Variables
-
-
-GameMode = 0     #default 0
+#GameMode = 0     #default 0
 WindowWidth = 800
 WindowHeight = 600
 TabSize = 100
@@ -43,14 +41,14 @@ RightTab.setFill("light grey")
 Dock = Circle(Point(WindowWidth/2,WindowHeight), 50)
 Dock.setFill("light grey")
 
-
-
 def main():
-
+    global GameMode
+    GameMode = 0
     def Playmode1():
+        GameMode = 1
+        print(GameMode)
         init(win)
         play1_button.deactivate()
-        GameMode = 1 
         CheckButtons()
         while True:
             click1 = win.checkMouse()
@@ -63,46 +61,40 @@ def main():
                     break
     
     def Playmode2():
+        GameMode = 2
+        print(GameMode)
         init(win)
         play2_button.deactivate()
-        GameMode = 2 
+        reset_button.activate()            #not working for mode 2
         CheckButtons()
         
-        #plot objects
+        #plot obstacles
         a = Bush(200, 350, win)
         b = Bush(620, 140, win)
         c = Grass(560, 200, win)
         d = Stone(400, 300, win)
         e = Stone(300, 450, win)
-        # later this can be generated with random or chaotic function
+        #later this can be generated with random or chaotic function
         
-        Avoid = [a,b,c,d,e]
+        Obstacles = [a,b,c,d,e]
+        print('1')
         
-        #for i in Group:
-           # Avoid.append(i.getX)
-           # Avoid.append(i.getY)
-            
-        #Avoid_tuple = [x for x in zip(*[iter(Avoid)]*2)]
-        #print(Avoid_tuple)
-        
-        
-        run_button.activate()
-        
-        while run_button.state():
-            click = win.checkMouse()
+        while True:
             CheckButtons()
-            if click != None:
-                if IsInside(click.getX(),click.getY()):
-                    Objects.append(Tree(click.getX(), click.getY(), win))
-                    if len(Objects)>2:
-                        reset_button.activate()
-                        run_button.activate()
-                        CheckButtons()
-                        break    #forçar a sair ao terceiro objeto colocado       
-        
-        
-      
-    
+            click = win.checkMouse()
+            if click!= None:
+                a = True
+                print('2')
+                for i in Obstacles:
+                    if distance(Point(i.getX(),i.getY()), Point(click.getX(),click.getY())) < 10:
+                        a = False
+                if IsInside(click.getX(), click.getY()) and a:
+                    tree = Tree(click.getX(), click.getY(), win)
+                    Goal.append(Point(click.getX(),click.getY()))
+                    run_button.activate()
+                if run_button.clicked(click):
+                    break
+
     def init(win):
         Dock.draw(win)
         RightCharger = Charger(WindowWidth - TabSize - 20, 20, win)
@@ -122,20 +114,21 @@ def main():
         myrobot = Harve(WindowWidth/2, WindowHeight, 100, 1, win)
         
     def CheckButtons():
-        mouse = win.checkMouse()
-        if mouse != None:
-            for Button in Buttons:
-                if Button.clicked(mouse):
-                    Button.onClick()
-                    return True
+        #print('GameMode is now ',GameMode)
         if GameMode == 1:
-            run_button.changehandler(Run1())
+            run_button.changehandler(Run1)
+            run_button.gethandler()
         elif GameMode == 2:
-            run_button.changehandler(Run2())
+            run_button.changehandler(Run2)
+            run_button.gethandler()
         else:
-            pass
-            
-    
+            mouse = win.checkMouse()
+            if mouse != None:
+                for Button in Buttons:
+                    if Button.clicked(mouse):
+                        Button.onClick()
+                        return True
+
     def IsInside(x,y):
         return (TabSize < x < (WindowWidth - TabSize))
     
@@ -177,38 +170,25 @@ def main():
                 run_button.deactivate()
                 break
         CheckButtons()
-        #finish 
+
     def Run2():
-        #aqui é que vai dar buraco
+        run_button.deactivate()
+        print('3')
+        lstPath = []
         
-        #Objects tem coisas
-        #Avoid_tuple tem coisas
-        
-        
-        Nodes = []
-        
-        pathplaning()   #returns a list of nodes (tuples) to use on Seek()
-                                #ele volta à base logo a posição inicial é a posição final
-        for i in Nodes:
-            while myrobot.getX()!= i.tuple[0] and myrobot.getY() != i.tuple[1]:             #enquanto ainda não estiver lá
-                Clock(i.tuple[0],i.tuple[1])                                                #anda de node em node
+        for i in Goal:
+            Path = pathplanning(Obstacles, i, myrobot.getPos())
+            for ii in Path:
+                c = Circle(ii,5)
+                c.setFill('red')
+                c.draw(win)
+            lstPath.append(Path)   
+                                 
+        for i in lstPath:                        
+            for ii in i:
+                while myrobot.getX()!= ii.getX() and myrobot.getY() != ii.getY():             #enquanto ainda não estiver lá
+                    Clock(ii.getX(),ii.getY())                                                #anda de node em node
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        pass
         
     def Clock(obsX, obsY):       #Harve module after this
         batteryinfo.setText(str(myrobot.getBattery()) +' %')
