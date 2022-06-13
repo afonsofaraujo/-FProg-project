@@ -33,8 +33,7 @@ class virtualnode:  #posI é o ponto inicial, angulo em radianos, alvo é um pon
         self.ang = ang
         self.alvo = alvo
         self.obstaculo = obstaculo
-        
-        
+
         a = 0
         p = 15
         
@@ -61,10 +60,6 @@ class virtualnode:  #posI é o ponto inicial, angulo em radianos, alvo é um pon
         self.posi = Point(newposi.getX(),newyposi.getY())
         
         
-        
-        
-        
-        
 def pathplanning(Avoid, alvo, pontodesaida): #lista de obstaculos
     #loop
 
@@ -76,8 +71,15 @@ def pathplanning(Avoid, alvo, pontodesaida): #lista de obstaculos
         f = virtualnode(pontodesaida,-3*math.pi/4 , Avoid)
         g = virtualnode(pontodesaida,-math.pi/2 , Avoid)
         h = virtualnode(pontodesaida,-math.pi/4, Avoid)
+       
         
-        angulo = 0
+       
+        
+       
+        
+       
+        
+       '''angulo = 0
         valnodes = []
         D = distancia(pontodesaida, alvo)
         lst=[a,b,c,d,e,f,g,h]
@@ -93,7 +95,7 @@ def pathplanning(Avoid, alvo, pontodesaida): #lista de obstaculos
         return angulo
     
         lstfinal
-        pontodesaida = 
+        pontodesaida = '''
     
     
     

@@ -18,7 +18,7 @@ from math import *
 import time
 
 #Global lists
-Obstacles = []      
+Objects = []      
 Buttons = []    
 Chargers = []
 Avoid = []
@@ -56,7 +56,7 @@ def main():
             click1 = win.checkMouse()
             if click1 != None:
                 if IsInside(click1.getX(), click1.getY()):
-                    Obstacles.append(Tree(click1.getX(), click1.getY(), win))
+                    Objects.append(Tree(click1.getX(), click1.getY(), win))
                     reset_button.activate()
                     run_button.activate()
                     CheckButtons()
@@ -93,8 +93,8 @@ def main():
             CheckButtons()
             if click != None:
                 if IsInside(click.getX(),click.getY()):
-                    Obstacles.append(Tree(click.getX(), click.getY(), win))
-                    if len(Obstacles)>2:
+                    Objects.append(Tree(click.getX(), click.getY(), win))
+                    if len(Objects)>2:
                         reset_button.activate()
                         run_button.activate()
                         CheckButtons()
@@ -151,10 +151,10 @@ def main():
             Charger.undraw()
             Charger.delete()
         Chargers.clear()
-        for Obstacle in Obstacles:
-            Obstacle.undraw()
-            Obstacle.delete()
-        Obstacles.clear()
+        for Object in Objects:
+            Object.undraw()
+            Object.delete()
+        Objects.clear()
         
     def Quit():
         win.close()
@@ -163,9 +163,9 @@ def main():
         run_button.deactivate()
         while True:
             CheckButtons()
-            Clock(myrobot.Sonar(Obstacles).getX(), myrobot.Sonar(Obstacles).getY())
-            if myrobot.Stop(Obstacles) == 1:
-                myrobot.Grab(myrobot.Sonar(Obstacles))
+            Clock(myrobot.Sonar(Objects).getX(), myrobot.Sonar(Objects).getY())
+            if myrobot.Stop(Objects) == 1:
+                myrobot.Grab(myrobot.Sonar(Objects))
                 break
 
         #starts the new movement to go to the charger
@@ -181,7 +181,7 @@ def main():
     def Run2():
         #aqui é que vai dar buraco
         
-        #Obstacles tem coisas
+        #Objects tem coisas
         #Avoid_tuple tem coisas
         
         

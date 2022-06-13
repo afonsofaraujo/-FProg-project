@@ -94,6 +94,10 @@ class Harve:
         '''returns PosY of the robot'''
         return self.PosY
     
+    def getPos(self):
+        '''returns Point where the robot is'''
+        return Point(self.PosX,self.PosY)
+    
     def getBattery(self):
         '''returns battery of the robot'''
         return round(self.Battery)
