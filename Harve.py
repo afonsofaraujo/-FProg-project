@@ -4,13 +4,9 @@ Created on Mon Apr  4 16:06:23 2022
 
 @author: Afonso Araújo
 """
+
 from graphics import *
 from math import *
-from Tree import *
-from Bush import *
-from Stone import *
-from Grass import *
-from Charger import *
 
 class Harve:
     def __init__(self, PosX, PosY, Battery, velocity, win):

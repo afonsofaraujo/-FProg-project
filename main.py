@@ -9,9 +9,7 @@ from graphics import *
 from Harve import *
 from Tree import *
 from Charger import *
-from Bush import *
-from Stone import *
-from Grass import *
+from Obstacle import *
 from PathplanningRRT import *
 from Button_modified import *
 from math import *
@@ -97,28 +95,23 @@ def Playmode2():
     reset_button.activate()            
     CheckButtons()
     
-    #plot obstacles (TODO: move all to same class)
-    a = Bush(200, 350, win)
-    b = Bush(620, 140, win)
-    c = Grass(560, 200, win)
-    d = Stone(400, 300, win)
-    e = Stone(300, 450, win)
-    
     #later this can be generated with random or chaotic function
-    Obstacles.append(a)
-    Obstacles.append(b)
-    Obstacles.append(c)
-    Obstacles.append(d)
-    Obstacles.append(e)
+    Obstacles.append(Obstacle(200, 350, 0, win))
+    Obstacles.append(Obstacle(620, 140, 0, win))
+    Obstacles.append(Obstacle(560, 200, 1, win))
+    Obstacles.append(Obstacle(400, 300, 2, win))
+    Obstacles.append(Obstacle(300, 350, 2, win))
+                
+                
     print('aaaaaaaaaaaaaaaaaaaa',len(Obstacles))
     print(' obstaculos .D')
     while True:
         click = win.checkMouse()
-        if click!= None:
+        if click != None:
             a = True
             print('playmode2 loop')
             for i in Obstacles:
-                if distance(Point(i.getX(),i.getY()), Point(click.getX(),click.getY())) < 10:
+                if distance(Point(i.PosX,i.PosY), Point(click.getX(),click.getY())) < 10:
                     a = False
             if IsInside(click.getX(), click.getY()) and a:
                 tree = Tree(click.getX(), click.getY(), win)

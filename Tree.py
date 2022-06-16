@@ -4,7 +4,9 @@ Created on Mon Apr  4 16:28:13 2022
 
 @author: Afonso Araújo
 """
+
 from graphics import *
+
 class Tree:
     def __init__(self, PosX, PosY, win):
         self.PosX = PosX

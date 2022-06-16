@@ -4,10 +4,8 @@ Created on Mon Apr  4 18:06:07 2022
 
 @author: Afonso Araújo
 """
-from graphics import *
 
-#ARRAY de BUttons
-#for i in button, if clicked
+from graphics import *
 
 class Button():
     """ Creates a Button object with methods activate(), deactivate(),

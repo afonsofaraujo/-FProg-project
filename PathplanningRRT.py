@@ -6,16 +6,8 @@ Created on Sun Jun 12 20:29:46 2022
 """
 
 from graphics import *
-from Harve import *
-from Tree import *
-from Charger import *
-from Bush import *
-from Stone import *
-from Grass import *
-from Button_modified import *
 from math import *
 import time
-
 
 
 def distance(a, b):
