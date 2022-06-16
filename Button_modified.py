@@ -38,8 +38,9 @@ class Button():
 
     def activate(self):
         """ sets to active / available to be clicked """
-        self.label.setTextColor('black')
-        self.rect.setWidth(2)
+        #self.label.setTextColor('black')
+        self.label.setTextColor('blue')
+        self.rect.setWidth(4)
         self.active = True
 
     def deactivate(self):
