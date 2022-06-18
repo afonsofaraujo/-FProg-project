@@ -7,6 +7,7 @@ Created on Sun Jun 12 20:29:46 2022
 
 from graphics import *
 from math import *
+import numpy
 import time
 
 
@@ -19,20 +20,23 @@ class virtualnode:  #posI é o ponto inicial, angulo em radianos, alvo é um pon
     def __init__(self, posi, ang, goal):
         
         self.radius = 10 #vai variar para ver o que acontece
-        self.nodepos = Point(posi.getX + radius*cos(ang),posi.getY + radius*sin(ang)) 
+        self.nodepos = Point(posi.getX() + self.radius*cos(ang),posi.getY() + self.radius*sin(ang)) 
         self.ang = ang
         self.goal = goal
-        self.d = distance(nodepos,alvo)
+        self.d = distance(self.nodepos, self.goal)
         
     def getX(self):
-        return nodePos.getX()
+        return self.nodepos.getX()
         
     def getY(self):
-        return nodePos.getY()
+        return self.nodepos.getY()
         
     def getd(self):
         return self.d
-
+    
+    def draw(self):
+        c = Circle(Point(self.nodepos.getX(),self.nodepos.getY()),self.radius)
+        c.draw(win)
   
 def pathplanning(Obstacles, goal, startPos): #lista de obstaculos
     '''returns a list of several points that make the path for the robot from its startPos to goal'''
@@ -43,36 +47,44 @@ def pathplanning(Obstacles, goal, startPos): #lista de obstaculos
     #a condição do while serve para parar o loop se estiver proximo do goal
     localpath = []
     currentPos = startPos
-    while distance(currentPos, goal)<20:
+    while True:
         
         a = virtualnode(currentPos,0, goal)
-        b = virtualnode(currentPos,math.pi/4, goal)
-        c = virtualnode(currentPos,math.pi/2, goal)
-        d = virtualnode(currentPos,3*math.pi/4, goal)
-        e = virtualnode(currentPos,math.pi, goal)
-        f = virtualnode(currentPos,-3*math.pi/4, goal)
-        g = virtualnode(currentPos,-math.pi/2, goal) 
-        h = virtualnode(currentPos,-math.pi/4, goal)
+        b = virtualnode(currentPos, numpy.pi/4, goal)
+        c = virtualnode(currentPos, numpy.pi/2, goal)
+        d = virtualnode(currentPos,3*numpy.pi/4, goal)
+        e = virtualnode(currentPos,numpy.pi, goal)
+        f = virtualnode(currentPos,-3*numpy.pi/4, goal)
+        g = virtualnode(currentPos,-numpy.pi/2, goal) 
+        h = virtualnode(currentPos,-numpy.pi/4, goal)
         
         Nodes = [a,b,c,d,e,f,g,h]
         
+        print('Nodes len',len(Nodes))
         #select nodes
         for i in Nodes:
             if i.getd() > distance(currentPos, goal):
                 Nodes.remove(i)
+        print('Nodes len',len(Nodes))
         for i in Nodes:     
             for ii in Obstacles:
-                if distance(Point(ii.getX(),ii.getY()),Point(i.getX(),i.getY())) < 2:    #raio da sensibilidade de cada node
+                if distance(Point(ii.PosX,ii.PosY),Point(i.getX(),i.getY())) < 2:    #raio da sensibilidade de cada node
                     Nodes.remove(i)
-        selectednode = Nodes.index(1)  #default
+        print('Nodes len',len(Nodes))
+        selectednode = Nodes[:1]  #default
         mind = 9999
         for i in Nodes:
             if i.getd() < mind:
                 selectednode = Nodes.index(i)
                 mind = i.getd
             elif i.getd() == mind:
-                selectednode = Nodes.index(1)     #em caso de empate
-        
+                selectednode = Nodes.index(0)     #em caso de empate
+        print(selectednode)
+        selectednode.draw()
         currentPos = Point(selectednode.getX(),selectednode.getY())
         localpath.append(currentPos)
+        
+        if distance(currentPos, goal)<20:
+            break
+    print(localpath)
     return localpath

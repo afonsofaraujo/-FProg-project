@@ -62,7 +62,6 @@ def main():
     Buttons.append(play2_button)
     Buttons.append(run_button)
     
-    print("Hello Worldings!!")
     
     while True:
         CheckButtons()
@@ -149,14 +148,13 @@ def init(win):
     myrobot = Harve(WindowWidth/2, WindowHeight, 100, 1, win)
     
 def CheckButtons():
-    if win != None:
-        mouse = win.checkMouse()
-        if mouse != None:
-            for Button in Buttons:
-                if Button.clicked(mouse):
-                    Button.onClick()
-                    Button.deactivate()
-                    return True
+    mouse = win.checkMouse()
+    if mouse != None:
+        for Button in Buttons:
+            if Button.clicked(mouse):
+                Button.onClick()
+                Button.deactivate()
+                return True
 
 def IsInside(x,y):
     return (TabSize < x < (WindowWidth - TabSize))
@@ -202,11 +200,10 @@ def Run1():
 
 def Run2():
     run_button.deactivate()
-    print('Run2')
+    print('-----------------Run2--------------------')
     lstPath = []
     
     for i in Goal:
-        print('Goal loop')
         print('Obstacles: ',len(Obstacles))
         print(myrobot.getPos())
         Path = pathplanning(Obstacles, i, myrobot.getPos())
@@ -221,7 +218,9 @@ def Run2():
     for i in lstPath:                    
         for ii in i:
             while myrobot.getX()!= ii.getX() and myrobot.getY() != ii.getY():             #enquanto ainda não estiver lá
-                Clock(ii.getX(),ii.getY())                                                #anda de node em node
+                Clock(ii.getX(),ii.getY())
+            
+             #anda de node em node
             #condição para ele parar e apanhar arvore
     
 def Clock(obsX, obsY):       #Harve module after this
