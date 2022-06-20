@@ -13,6 +13,7 @@ from Obstacle import *
 from PathplanningRRT import *
 from Button_modified import *
 from math import *
+from Pathfind import *
 import time
 
 #Global lists
@@ -91,8 +92,9 @@ def Playmode2():
     print('GameMode is now ', GameMode)
     init(win)
     play2_button.deactivate()
+    play1_button.deactivate()
     reset_button.activate()            
-    CheckButtons()
+    
     
     #later this can be generated with random or chaotic function
     Obstacles.append(Obstacle(200, 350, 0, win))
@@ -101,14 +103,10 @@ def Playmode2():
     Obstacles.append(Obstacle(400, 300, 2, win))
     Obstacles.append(Obstacle(300, 350, 2, win))
                 
-                
-    print('aaaaaaaaaaaaaaaaaaaa',len(Obstacles))
-    print(' obstaculos .D')
     while True:
         click = win.checkMouse()
         if click != None:
             a = True
-            print('playmode2 loop')
             for i in Obstacles:
                 if distance(Point(i.PosX,i.PosY), Point(click.getX(),click.getY())) < 10:
                     a = False
@@ -199,7 +197,15 @@ def Run1():
     CheckButtons()
 
 def Run2():
-    run_button.deactivate()
+    
+    print(len(Obstacles),'Obstacles')
+    print(len(Goal),'Goals')
+    
+    for i in Goal:
+        encontrar_caminho(obst, myrobot.getPos(), objetivo)
+        
+    
+    '''run_button.deactivate()
     print('-----------------Run2--------------------')
     lstPath = []
     
@@ -222,7 +228,7 @@ def Run2():
             
              #anda de node em node
             #condição para ele parar e apanhar arvore
-    
+    '''
 def Clock(obsX, obsY):       #Harve module after this
     batteryinfo.setText(str(myrobot.getBattery()) +' %')
     time.sleep(0.01)
