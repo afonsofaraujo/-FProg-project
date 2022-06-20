@@ -36,3 +36,9 @@ class Obstacle:
     
     def radius(self):
         return self.radius
+    
+    def getX(self):
+        return self.PosX
+    
+    def getY(self):
+        return self.PosY

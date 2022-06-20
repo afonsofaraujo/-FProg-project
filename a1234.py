@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jun 20 16:31:54 2022
+Created on Mon Jun 20 17:50:38 2022
 
 @author: Afonso Araújo
 """
+
 from graphics import *
 import math
 import time
-from Harve import *
 
 def distancia(variavelA, variavelB):
     euyciuwenc = (math.sqrt((variavelA.getX()-variavelB.getX())**2+(variavelA.getY()-variavelB.getY())**2))
@@ -25,10 +25,10 @@ def sensor(angulo, D, centro, listaobstaculos):
     
     for i2 in range(int(D/5)):
         for obs in listaobstaculos:
-            if distancia(obs, s)<20:
+            if distancia(obs, s)<30:
                 a = 1
-            if a==1:
-                break
+        if a==1:
+            break
             
         s.move(5*math.cos(angulo), 5*math.sin(angulo))
         
@@ -65,12 +65,12 @@ def calcular_angulo(obst, Pinicial, objetivo):
     for s2 in range (len(lista2)):
         deltas += ((lista2[s2])-Dinicial)*lista4[s2]
         T += lista2[s2]-Dinicial
-    
+        
     varang = (deltas/T)
     
     # CASO O ROBO ESTEJA EM ROTA DE COLISÃO
     for o in obst:
-        if distancia(Pinicial, o) < 46:
+        if distancia(Pinicial, o) < 36:
             print("CUIDADO")
             angulo0 = (math.atan((o.getY()-Pinicial.getY())/(o.getX()-Pinicial.getX())))
             if angulo0<0:
@@ -80,9 +80,6 @@ def calcular_angulo(obst, Pinicial, objetivo):
             
             if angulo2<0:
                 angulo2 += 2*math.pi
-                
-            if angulo1>2*math.pi:
-                angulo1 -= 2*math.pi
             
             if abs(angulo1-(deltas/T))<abs(angulo2-(deltas/T)):
                 varang = angulo1
@@ -95,24 +92,22 @@ def calcular_angulo(obst, Pinicial, objetivo):
     
     return (varang)
 
-def encontrar_caminho(obst, Pinicial, objetivo, robot,win):
+def encontrar_caminho(obst, Pinicial, objetivo, robo, janela):
     if 10<distancia(Pinicial, objetivo):
         ang = calcular_angulo(obst, Pinicial, objetivo)
         Pinicial.move(10*math.cos(ang), 10*math.sin(ang))
-    
-        
-        
-        robot.Move(10*math.cos(ang), 10*math.sin(ang))
-        #robot.Seek(10*math.cos(ang), 10*math.sin(ang))
-        Point(Pinicial.getX(),Pinicial.getY()).draw(win)
-        time.sleep(0.1)
-        
         print(distancia(Pinicial, objetivo))
+        robo.Move(10*math.cos(ang), 10*math.sin(ang))
+        time.sleep(0.5)
         
-        encontrar_caminho(obst, Pinicial, objetivo,robot,win)
+        
+        Point(Pinicial.getX(), Pinicial.getY()).draw(janela)
+        
+        
+        encontrar_caminho(obst, Pinicial, objetivo, robo,janela)
         
     else:
         Pinicial.move((objetivo.getX()-Pinicial.getX()), (objetivo.getY()-Pinicial.getY()))
-        robot.Move(10*math.cos(ang), 10*math.sin(ang))
-        time.sleep(0.1)
+        robo.Move((objetivo.getX()-Pinicial.getX()), (objetivo.getY()-Pinicial.getY()))
         print("feito")
+        

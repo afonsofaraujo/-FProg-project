@@ -78,6 +78,9 @@ class Harve:
         '''undraw robot'''
         self.body.undraw()
         
+    def draw(self, win):
+        self.body.draw(win)
+        
     def delete(self):
         '''deletes robot'''
         del self

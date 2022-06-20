@@ -13,7 +13,8 @@ from Obstacle import *
 from PathplanningRRT import *
 from Button_modified import *
 from math import *
-from Pathfind import *
+#from Pathfind import *
+from a1234 import *
 import time
 
 #Global lists
@@ -32,7 +33,6 @@ TabSize = 100
 ButtonsVerticalSpacement = 50
 ButtonsHeight = 30
 ObstaclesSize = 5               #radius
-
 win = GraphWin("GAME", WindowWidth, WindowHeight, autoflush=False)
 LeftTab = Rectangle(Point(0,WindowHeight), Point(TabSize,0))
 LeftTab.setFill("light grey")
@@ -196,13 +196,14 @@ def Run1():
             break
     CheckButtons()
 
-def Run2():
+def Run2(win):
     
     print(len(Obstacles),'Obstacles')
     print(len(Goal),'Goals')
     
-    for i in Goal:
-        encontrar_caminho(obst, myrobot.getPos(), objetivo)
+
+    encontrar_caminho(Obstacles, myrobot.getPos(), Goal[0], myrobot, win)
+    
         
     
     '''run_button.deactivate()
