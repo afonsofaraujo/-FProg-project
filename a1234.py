@@ -8,106 +8,101 @@ Created on Mon Jun 20 17:50:38 2022
 from graphics import *
 import math
 import time
+from Harve import *
 
-def distancia(variavelA, variavelB):
-    euyciuwenc = (math.sqrt((variavelA.getX()-variavelB.getX())**2+(variavelA.getY()-variavelB.getY())**2))
-    return (euyciuwenc)
+def distance(a, b):
+    return math.sqrt((a.getX()-b.getX())**2+(a.getY()-b.getY())**2)
     
-def sensor(angulo, D, centro, listaobstaculos):
+def sensor(ang, D, center, Obstacles):
     
     # angulo diz para qual direção o sensor anda
     # a D diz quantos passos o sensor da na direção dita pelo angulo
     # o centro diz da onde o sensor sai
     # lista de obstáculos
     
-    s = Point(centro.getX(), centro.getY())
+    s = Point(center.getX(), center.getY())
     a = 0
     
-    for i2 in range(int(D/5)):
-        for obs in listaobstaculos:
-            if distancia(obs, s)<30:
+    for i in range(int(D/5)):
+        for ii in Obstacles:
+            if distance(ii, s)<30:
                 a = 1
         if a==1:
             break
-            
-        s.move(5*math.cos(angulo), 5*math.sin(angulo))
-        
+        s.move(5*math.cos(ang), 5*math.sin(ang)) 
     return s
 
 
-def calcular_angulo(obst, Pinicial, objetivo):
+def calcular_angulo(Obstacles, Pinicial, goal):
 
-    Dinicial = (distancia(objetivo, Pinicial))
+    Dinicial = (distance(goal, Pinicial))
     
-    S1 = distancia((sensor(0, Dinicial, Pinicial, obst)), objetivo)
-    S2 = distancia((sensor(math.pi/4, Dinicial, Pinicial, obst)), objetivo)
-    S3 = distancia((sensor(math.pi/2, Dinicial, Pinicial, obst)), objetivo)
-    S4 = distancia((sensor(3*math.pi/4, Dinicial, Pinicial, obst)), objetivo)
-    S5 = distancia((sensor(math.pi, Dinicial, Pinicial, obst)), objetivo)
-    S6 = distancia((sensor(-3*math.pi/4, Dinicial, Pinicial, obst)), objetivo)
-    S7 = distancia((sensor(-math.pi/2, Dinicial, Pinicial, obst)), objetivo)
-    S8 = distancia((sensor(-math.pi/4, Dinicial, Pinicial, obst)), objetivo)
+    S1 = distance((sensor(0, Dinicial, Pinicial, Obstacles)), goal)
+    S2 = distance((sensor(math.pi/4, Dinicial, Pinicial, Obstacles)), goal)
+    S3 = distance((sensor(math.pi/2, Dinicial, Pinicial, Obstacles)), goal)
+    S4 = distance((sensor(3*math.pi/4, Dinicial, Pinicial, Obstacles)), goal)
+    S5 = distance((sensor(math.pi, Dinicial, Pinicial, Obstacles)), goal)
+    S6 = distance((sensor(-3*math.pi/4, Dinicial, Pinicial, Obstacles)), goal)
+    S7 = distance((sensor(-math.pi/2, Dinicial, Pinicial, Obstacles)), goal)
+    S8 = distance((sensor(-math.pi/4, Dinicial, Pinicial, Obstacles)), goal)
     
-    lista1 = [S1, S2, S3, S4, S5, S6, S7, S8]
-    lista2 = []
+    lst1 = [S1, S2, S3, S4, S5, S6, S7, S8]
+    lst2 = []
     
-    lista3 = [0, math.pi/4, math.pi/2, 3*math.pi/4, math.pi, 5*math.pi/4, 3*math.pi/2, 7*math.pi/4]
-    lista4 = []
+    lst3 = [0, math.pi/4, math.pi/2, 3*math.pi/4, math.pi, 5*math.pi/4, 3*math.pi/2, 7*math.pi/4]
+    lst4 = []
     
-    for i in range (len(lista1)):
-        if (lista1[i])<Dinicial:
-            lista2.append(lista1[i])
-            lista4.append(lista3[i])
+    for i in range (len(lst1)):
+        if (lst1[i])<Dinicial:
+            lst2.append(lst1[i])
+            lst4.append(lst3[i])
             
     T = 0
     deltas = 0
     
-    for s2 in range (len(lista2)):
-        deltas += ((lista2[s2])-Dinicial)*lista4[s2]
-        T += lista2[s2]-Dinicial
+    for ii in range (len(lst2)):
+        deltas += ((lst2[ii])-Dinicial)*lst4[ii]
+        T += lst2[ii]-Dinicial
         
     varang = (deltas/T)
     
     # CASO O ROBO ESTEJA EM ROTA DE COLISÃO
-    for o in obst:
-        if distancia(Pinicial, o) < 36:
+    for i in Obstacles:
+        if distance(Pinicial, i) < 36:
             print("CUIDADO")
-            angulo0 = (math.atan((o.getY()-Pinicial.getY())/(o.getX()-Pinicial.getX())))
-            if angulo0<0:
-                angulo0 += 2*math.pi
-            angulo1 = angulo0 + (math.pi/2)
-            angulo2 = angulo0 - (math.pi/2)
+            ang0 = math.atan((i.getY()-Pinicial.getY())/(i.getX()-Pinicial.getX()))
+            if ang0<0:
+                ang0 += 2*math.pi
+            ang1 = ang0 + (math.pi/2)
+            ang2 = ang0 - (math.pi/2)
             
-            if angulo2<0:
-                angulo2 += 2*math.pi
+            if ang2<0:
+                ang2 += 2*math.pi
             
-            if abs(angulo1-(deltas/T))<abs(angulo2-(deltas/T)):
-                varang = angulo1
+            if abs(ang1-(deltas/T))<abs(ang2-(deltas/T)):
+                varang = ang1
             else:
-                varang = angulo2
+                varang = ang2
             
-    
     #-------------------------------------------------------------------------------------------------------
                     
-    
-    return (varang)
+    return varang
 
-def encontrar_caminho(obst, Pinicial, objetivo, robo, janela):
-    if 10<distancia(Pinicial, objetivo):
-        ang = calcular_angulo(obst, Pinicial, objetivo)
+def encontrar_caminho(Obstacles, Pinicial, goal, robot, win, Path):
+    if distance(Pinicial, goal)>10:
+        ang = calcular_angulo(Obstacles, Pinicial, goal)
         Pinicial.move(10*math.cos(ang), 10*math.sin(ang))
-        print(distancia(Pinicial, objetivo))
-        robo.Move(10*math.cos(ang), 10*math.sin(ang))
-        time.sleep(0.5)
-        
-        
-        Point(Pinicial.getX(), Pinicial.getY()).draw(janela)
-        
-        
-        encontrar_caminho(obst, Pinicial, objetivo, robo,janela)
+        robot.Move(10*math.cos(ang), 10*math.sin(ang))
+             
+        print(distance(Pinicial, goal))
+        pt = Point(Pinicial.getX(), Pinicial.getY())
+        pt.draw(win)
+        Path.append(pt)
+                
+        encontrar_caminho(Obstacles, Pinicial, goal, robot, win, Path)
         
     else:
-        Pinicial.move((objetivo.getX()-Pinicial.getX()), (objetivo.getY()-Pinicial.getY()))
-        robo.Move((objetivo.getX()-Pinicial.getX()), (objetivo.getY()-Pinicial.getY()))
+        Pinicial.move((goal.getX()-Pinicial.getX()), (goal.getY()-Pinicial.getY()))
+        robot.Move((goal.getX()-Pinicial.getX()), (goal.getY()-Pinicial.getY()))
         print("feito")
         

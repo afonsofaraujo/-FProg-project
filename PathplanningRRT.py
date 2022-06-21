@@ -34,9 +34,9 @@ class virtualnode:  #posI é o ponto inicial, angulo em radianos, alvo é um pon
     def getd(self):
         return self.d
     
-    def draw(self):
-        c = Circle(Point(self.nodepos.getX(),self.nodepos.getY()),self.radius)
-        c.draw(win)
+    #def draw(self):
+        #c = Circle(Point(self.nodepos.getX(),self.nodepos.getY()),self.radius)
+        #c.draw(win)
   
 def pathplanning(Obstacles, goal, startPos): #lista de obstaculos
     '''returns a list of several points that make the path for the robot from its startPos to goal'''
@@ -60,12 +60,10 @@ def pathplanning(Obstacles, goal, startPos): #lista de obstaculos
         
         Nodes = [a,b,c,d,e,f,g,h]
         
-        print('Nodes len',len(Nodes))
         #select nodes
         for i in Nodes:
             if i.getd() > distance(currentPos, goal):
                 Nodes.remove(i)
-        print('Nodes len',len(Nodes))
         for i in Nodes:     
             for ii in Obstacles:
                 if distance(Point(ii.PosX,ii.PosY),Point(i.getX(),i.getY())) < 2:    #raio da sensibilidade de cada node
@@ -74,17 +72,14 @@ def pathplanning(Obstacles, goal, startPos): #lista de obstaculos
         selectednode = Nodes[:1]  #default
         mind = 9999
         for i in Nodes:
-            if i.getd() < mind:
-                selectednode = Nodes.index(i)
-                mind = i.getd
-            elif i.getd() == mind:
-                selectednode = Nodes.index(0)     #em caso de empate
-        print(selectednode)
-        selectednode.draw()
+            if i.d < mind:
+                selectednode = i
+                mind = i.d
+            elif i.d == mind:
+                selectednode = Nodes[0]     #em caso de empate
         currentPos = Point(selectednode.getX(),selectednode.getY())
         localpath.append(currentPos)
         
         if distance(currentPos, goal)<20:
             break
-    print(localpath)
     return localpath

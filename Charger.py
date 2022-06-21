@@ -14,7 +14,7 @@ class  Charger:
         self.body = Rectangle(Point(PosX-20, PosY+20),Point(PosX+20, PosY-20))
         self.body.setFill('yellow')
         self.body.draw(win)
-        
+    
     def undraw(self):
         self.body.undraw()
                
