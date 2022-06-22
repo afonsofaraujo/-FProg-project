@@ -27,6 +27,7 @@ class Button():
 
         self.label = Text(center,label)
         self.label.setTextColor('lightgrey')
+        self.label.setFace('courier')
 
         self.rect.draw(win)
         self.label.draw(win)
@@ -37,7 +38,7 @@ class Button():
     def activate(self):
         """ sets to active / available to be clicked """
         #self.label.setTextColor('black')
-        self.label.setTextColor('blue')
+        self.label.setTextColor('black')
         self.rect.setWidth(4)
         self.active = True
 

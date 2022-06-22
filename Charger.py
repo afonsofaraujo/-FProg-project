@@ -8,10 +8,10 @@ Created on Tue May 17 11:13:20 2022
 from graphics import *
 
 class  Charger:
-    def __init__(self, PosX, PosY, win):
+    def __init__(self, PosX, PosY, win, mx, my):
         self.PosX = PosX
         self.PosY = PosY
-        self.body = Rectangle(Point(PosX-20, PosY+20),Point(PosX+20, PosY-20))
+        self.body = Rectangle(Point(PosX-20*mx, PosY+20*my),Point(PosX+20*mx, PosY-20*my))
         self.body.setFill('yellow')
         self.body.draw(win)
     
