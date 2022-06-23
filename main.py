@@ -19,10 +19,10 @@ from math import *
 from Findpath import *
 
 
-#Global Lists
+# Global Lists
 Obstacles = []
 Goal = []
-Objects = []   
+Objects = []
 Buttons = []
 Chargers = []
 bars = []
@@ -33,27 +33,27 @@ win2 = Point(0,0)
 global win3
 win3 = Point(0,0)
 
-#GLobal Variables
-GameMode = 0 #0 mean no gamemode
+# Global Variables
+GameMode = 0  # 0 mean no gamemode
 WindowWidth = 800
 WindowHeight = 600
 TabSize = 100
 ButtonsVerticalSpacement = 50
 ButtonsHeight = 30
-ObstaclesSize = 5 #Radius
+ObstaclesSize = 5  # Radius
 
-#Global Objects
+# Global Objects
 win = GraphWin("GAME", WindowWidth, WindowHeight, autoflush=False)
-LeftTab = Rectangle(Point(0,WindowHeight), Point(TabSize,0))
+LeftTab = Rectangle(Point(0, WindowHeight), Point(TabSize, 0))
 LeftTab.setFill("light grey")
 RightTab = Rectangle(Point(WindowWidth - TabSize, WindowHeight), Point(WindowWidth, 0))
 RightTab.setFill("light grey")
 
-rec1 = Rectangle(Point(WindowWidth-TabSize/2-15,ButtonsVerticalSpacement-5),Point(WindowWidth-TabSize/2+14,ButtonsVerticalSpacement-6))
-rec2 = Rectangle(Point(WindowWidth-TabSize/2-15,ButtonsVerticalSpacement+6),Point(WindowWidth-TabSize/2+14,ButtonsVerticalSpacement+5))
-rec3 = Rectangle(Point(WindowWidth-TabSize/2-15,ButtonsVerticalSpacement+6),Point(WindowWidth-TabSize/2-14,ButtonsVerticalSpacement-6))
-rec4 = Rectangle(Point(WindowWidth-TabSize/2+14,ButtonsVerticalSpacement+6),Point(WindowWidth-TabSize/2+13,ButtonsVerticalSpacement-6))
-rec5 = Rectangle(Point(WindowWidth-TabSize/2+17,ButtonsVerticalSpacement+5),Point(WindowWidth-TabSize/2+16,ButtonsVerticalSpacement-5))
+rec1 = Rectangle(Point(WindowWidth-TabSize/2-15, ButtonsVerticalSpacement-5), Point(WindowWidth-TabSize/2+14, ButtonsVerticalSpacement-6))
+rec2 = Rectangle(Point(WindowWidth-TabSize/2-15, ButtonsVerticalSpacement+6), Point(WindowWidth-TabSize/2+14, ButtonsVerticalSpacement+5))
+rec3 = Rectangle(Point(WindowWidth-TabSize/2-15, ButtonsVerticalSpacement+6), Point(WindowWidth-TabSize/2-14, ButtonsVerticalSpacement-6))
+rec4 = Rectangle(Point(WindowWidth-TabSize/2+14, ButtonsVerticalSpacement+6), Point(WindowWidth-TabSize/2+13, ButtonsVerticalSpacement-6))
+rec5 = Rectangle(Point(WindowWidth-TabSize/2+17, ButtonsVerticalSpacement+5), Point(WindowWidth-TabSize/2+16, ButtonsVerticalSpacement-5))
 rec1.setFill('black')
 rec2.setFill('black')
 rec3.setFill('black')
@@ -80,30 +80,31 @@ def main():
     run_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*3), (2/3)*TabSize, ButtonsHeight, "Run", Run1)
     reset_button.deactivate()
     run_button.deactivate()
-    
+
     Buttons.append(quit_button)
     Buttons.append(reset_button)
     Buttons.append(play1_button)
     Buttons.append(play2_button)
     Buttons.append(play3_button)
     Buttons.append(run_button)
-    
+
     while True:
         CheckButtons(win)
-    
+
+
 def Playmode1():
     GameMode = 1
     run_button.changehandler(Run1)
-    print('GameMode is now ',GameMode)
+    print('GameMode is now ', GameMode)
     init(win)
     play1_button.deactivate()
     reset_button.deactivate()
     CheckButtons(win)
-    infolabel1 = Text(Point(WindowWidth/2,WindowHeight/2- ButtonsVerticalSpacement*0.5),"Click to place ")
+    infolabel1 = Text(Point(WindowWidth/2, WindowHeight/2-ButtonsVerticalSpacement*0.5), "Click to place ")
     infolabel1.setFace('courier')
     infolabel1.setSize(10)
     infolabel1.draw(win)
-    infolabel2 = Text(Point(WindowWidth/2,WindowHeight/2 + ButtonsVerticalSpacement*0.5),"a Tree and hit Run")
+    infolabel2 = Text(Point(WindowWidth/2, WindowHeight/2+ButtonsVerticalSpacement*0.5), "a Tree and hit Run")
     infolabel2.setFace('courier')
     infolabel2.setSize(10)
     infolabel2.draw(win)
@@ -117,7 +118,8 @@ def Playmode1():
                 run_button.activate()
                 CheckButtons(win)
                 break
-            
+
+
 def Run1():
     run_button.deactivate()
     reset_button.deactivate()
@@ -135,22 +137,23 @@ def Run1():
             print('-----------done-------------')
             reset_button.activate()
             break
-    infolabel3 = Text(Point(WindowWidth/2,WindowHeight/2),"Click to Reset")
+    infolabel3 = Text(Point(WindowWidth/2, WindowHeight/2), "Click to Reset")
     infolabel3.setFace('courier')
     infolabel3.setSize(10)
     infolabel3.draw(win)
-    clicktoreset = win.getMouse()
     infolabel3.undraw()
     Reset()
     CheckButtons(win)
-         
+
+
 def Generatefield():
-    Obstacles.append(Obstacle(randint(TabSize+20,780-TabSize), randint(TabSize+20,580-TabSize), 0, win))
-    Obstacles.append(Obstacle(randint(TabSize+20,780-TabSize), randint(TabSize+20,580-TabSize), 0, win))
-    Obstacles.append(Obstacle(randint(TabSize+20,780-TabSize), randint(TabSize+20,580-TabSize), 1, win))
-    Obstacles.append(Obstacle(randint(TabSize+20,780-TabSize), randint(TabSize+20,580-TabSize), 2, win))
-    Obstacles.append(Obstacle(randint(TabSize+20,780-TabSize), randint(TabSize+20,580-TabSize), 2, win))   
+    Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), 0, win))
+    Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), 0, win))
+    Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), 1, win))
+    Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), 2, win))
+    Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), 2, win))   
     
+
 def Playmode2():
     GameMode = 2
     run_button.changehandler(Run2)
@@ -159,16 +162,16 @@ def Playmode2():
     play2_button.deactivate()
     play1_button.deactivate()
     reset_button.activate()
-            
-    Generatefield()   
-    
+
+    Generatefield()
+
     while True:
-        #CheckButtons()
+        # CheckButtons()
         click = win.checkMouse()
         if click != None:
             a = True
             for i in Obstacles:
-                if distance(Point(i.PosX,i.PosY), Point(click.getX(),click.getY())) < 20:
+                if distance(Point(i.PosX,i.PosY), Point(click.getX(), click.getY())) < 20:
                     a = False
             if IsInside(click.getX(), click.getY()) and a:
                 Goal.append(Tree(click.getX(), click.getY(), win))
@@ -176,30 +179,32 @@ def Playmode2():
                 run_button.activate()
             if run_button.clicked(click):
                 break
-        #CheckButtons()
+        # CheckButtons()
     run_button.deactivate()
     encontrar_caminho(Obstacles, myrobot.getPos(), Goal[0], win, Path)
     Run2()
-    
+
+
 def Run2():
     print('-----------Run2-------------')
-    print(len(Obstacles),'Obstacles')
-    print(len(Goal),'Goals')
-    print(len(Path),'Points')
-    #Lucas
+    print(len(Obstacles), 'Obstacles')
+    print(len(Goal), 'Goals')
+    print(len(Path), 'Points')
+    # Lucas
     for point in Path:
         point.draw(win)
-        
+
+
     for i in Path:
-        while distance(i, myrobot.Pos)>2:
+        while distance(i, myrobot.Pos) > 2:
             update(30)
-            Clock(i.getX(),i.getY())
+            Clock(i.getX(), i.getY())
         Path.remove(i)
-   
+
     print('-----------done-------------')
     clicktoreset = win.getMouse()
     Reset()
-    
+
 
 def Playmode3():
     GameMode = 3
@@ -211,12 +216,13 @@ def Playmode3():
     reset_button.activate()
     win2 = GraphWin("Choose", WindowWidth/2, WindowHeight/2, autoflush=False)
     button_file = Button(win2, Point(WindowWidth/4, WindowHeight*(1/6)), 2*TabSize, 2*ButtonsHeight, "Read from a file", Run3file)
-    button_random = Button(win2, Point(WindowWidth/4,WindowHeight*(2/6)), 2*TabSize, 2*ButtonsHeight, "Random map", Run3random)
+    button_random = Button(win2, Point(WindowWidth/4, WindowHeight*(2/6)), 2*TabSize, 2*ButtonsHeight, "Random map", Run3random)
     Buttons.append(button_file)
     Buttons.append(button_random)
     while win2 != 0:
         CheckButtons(win2)
-        
+
+
 def Filereader():
     Lines = []
     filename = fd.askopenfilename()
@@ -226,25 +232,26 @@ def Filereader():
     print(len(Lines))
     print(Lines[1])
     width, height = Lines[1].split(" ")
-    for i in range(3,len(Lines)):
+    for i in range(3, len(Lines)):
         Type, PosX, PosY = Lines[i].split(" ")
         Obstacles.append(Obstacle(float(PosX)*int(width), float(PosY)*int(height), int(Type), win))
     f.close()
     return int(width), int(height)
-   
+
+
 def Run3file():
-    #win2.close()
+    # win2.close()
     win2 = 0
     print('Run3file')
-    width,height = Filereader()
-    
-    
+    width, height = Filereader()
+
+
     xratio = 100/width
     yratio = 100/height
     print(xratio)
     print(yratio)
     init2(width, height)
-    
+
 
     clicktoclose = win.getMouse()
     if clicktoclose != None:

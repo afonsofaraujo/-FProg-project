@@ -7,6 +7,7 @@ Created on Mon Apr  4 18:06:07 2022
 
 from graphics import *
 
+
 class Button():
     """ Creates a Button object with methods activate(), deactivate(),
         and clicked(pt) """
