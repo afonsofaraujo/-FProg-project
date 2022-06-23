@@ -10,6 +10,7 @@ import math
 import time
 from Harve import *
 
+
 def distance(a, b):
     return math.sqrt((a.getX()-b.getX())**2+(a.getY()-b.getY())**2)
     
@@ -49,7 +50,34 @@ def calcular_angulo(Obstacles, Pinicial, goal):
     lst1 = [S1, S2, S3, S4, S5, S6, S7, S8]
     lst2 = []
     
-    lst3 = [0, math.pi/4, math.pi/2, 3*math.pi/4, math.pi, 5*math.pi/4, 3*math.pi/2, 7*math.pi/4]
+    X = (goal.getX() - Pinicial.getX())/Dinicial
+    Y = (goal.getY() - Pinicial.getY())/Dinicial
+    
+    #REGIÃO 1
+    if 0<=X<=1 and -0.5<=Y<=1:
+        
+        if Y==1:
+            lst3 = [2*math.pi, 9*math.pi/4, 5*math.pi/2, 11*math.pi/4, 3*math.pi, 13*math.pi/4, 3*math.pi/2, 7*math.pi/4]
+        else:
+            lst3 = [2*math.pi, 9*math.pi/4, 5*math.pi/2, 11*math.pi/4, 3*math.pi, 5*math.pi/4, 3*math.pi/2, 7*math.pi/4]
+            
+    #REGIÃO 2
+    if -(math.sqrt(3)/2)<=X<=(math.sqrt(3)/2) and -1<=Y<=-0.5:
+        
+        if X==(math.sqrt(3)/2):
+            lst3 = [2*math.pi, 9*math.pi/4, 5*math.pi/2, 3*math.pi/4, math.pi, 5*math.pi/4, 3*math.pi/2, 7*math.pi/4]
+        else:
+            lst3 = [2*math.pi, 9*math.pi/4, math.pi/2, 3*math.pi/4, math.pi, 5*math.pi/4, 3*math.pi/2, 7*math.pi/4]
+        
+            
+    #REGIÃO 3
+    if -1<=X<=0 and -0.5<=Y<=1:
+    
+        if Y==1:
+            lst3 = [2*math.pi, 9*math.pi/4, 5*math.pi/2, 11*math.pi/4, 3*math.pi, 13*math.pi/4, 7*math.pi/2, 7*math.pi/4]
+        else:
+            lst3 = [0, math.pi/4, math.pi/2, 3*math.pi/4, math.pi, 5*math.pi/4, 3*math.pi/2, 7*math.pi/4]
+
     lst4 = []
     
     for i in range (len(lst1)):
@@ -57,7 +85,7 @@ def calcular_angulo(Obstacles, Pinicial, goal):
             lst2.append(lst1[i])
             lst4.append(lst3[i])
             
-    T = 0
+    T = 0.001
     deltas = 0
     
     for ii in range (len(lst2)):
@@ -70,7 +98,10 @@ def calcular_angulo(Obstacles, Pinicial, goal):
     for i in Obstacles:
         if distance(Pinicial, i) < 36:
             print("CUIDADO")
-            ang0 = math.atan((i.getY()-Pinicial.getY())/(i.getX()-Pinicial.getX()))
+            if (i.getX()-Pinicial.getX())==0:
+                angulo0 = math.pi/2
+            else:
+                ang0 = (math.atan((i.getY()-Pinicial.getY())/(i.getX()-Pinicial.getX())))
             if ang0<0:
                 ang0 += 2*math.pi
             ang1 = ang0 + (math.pi/2)
@@ -88,21 +119,23 @@ def calcular_angulo(Obstacles, Pinicial, goal):
                     
     return varang
 
-def encontrar_caminho(Obstacles, Pinicial, goal, robot, win, Path):
+def encontrar_caminho(Obstacles, Pinicial, goal, win, Path):
     if distance(Pinicial, goal)>10:
         ang = calcular_angulo(Obstacles, Pinicial, goal)
         Pinicial.move(10*math.cos(ang), 10*math.sin(ang))
-        robot.Move(10*math.cos(ang), 10*math.sin(ang))
-             
+        #robot.Move(10*math.cos(ang), 10*math.sin(ang))
+        
+        #time.sleep(0.1)
         print(distance(Pinicial, goal))
         pt = Point(Pinicial.getX(), Pinicial.getY())
         pt.draw(win)
-        Path.append(pt)
+        Path.append(Point(Pinicial.getX(), Pinicial.getY()))
                 
-        encontrar_caminho(Obstacles, Pinicial, goal, robot, win, Path)
+        encontrar_caminho(Obstacles, Pinicial, goal, win, Path)
         
     else:
         Pinicial.move((goal.getX()-Pinicial.getX()), (goal.getY()-Pinicial.getY()))
-        robot.Move((goal.getX()-Pinicial.getX()), (goal.getY()-Pinicial.getY()))
+        Path.append(Point(Pinicial.getX(),Pinicial.getY()))
+        #robot.Move((goal.getX()-Pinicial.getX()), (goal.getY()-Pinicial.getY()))
         print("feito")
         

@@ -13,7 +13,7 @@ from Obstacle import *
 #from PathplanningRRT import *
 from Button_modified import *
 from math import *
-from a1234 import *
+from Findpath import *
 import random
 import time
 from tkinter import filedialog as fd
@@ -32,6 +32,7 @@ global win2
 win2 = Point(0,0)
 global win3
 win3 = Point(0,0)
+
 
 #Variables
 #global GameMode
@@ -97,11 +98,21 @@ def Playmode1():
     play1_button.deactivate()
     reset_button.deactivate()
     CheckButtons(win)
+    infolabel1 = Text(Point(WindowWidth/2,WindowHeight/2- ButtonsVerticalSpacement*0.5),"Click to place ")
+    infolabel1.setFace('courier')
+    infolabel1.setSize(10)
+    infolabel1.draw(win)
+    infolabel2 = Text(Point(WindowWidth/2,WindowHeight/2 + ButtonsVerticalSpacement*0.5),"a Tree and hit Run")
+    infolabel2.setFace('courier')
+    infolabel2.setSize(10)
+    infolabel2.draw(win)
     while True:
         click1 = win.checkMouse()
         if click1 != None:
             if IsInside(click1.getX(), click1.getY()):
                 Objects.append(Tree(click1.getX(), click1.getY(), win))
+                infolabel1.undraw()
+                infolabel2.undraw()
                 run_button.activate()
                 CheckButtons(win)
                 break
@@ -122,6 +133,8 @@ def Run1():
             print('-----------done-------------')
             reset_button.activate()
             break
+    clicktoreset = win.getMouse()
+    Reset()
     CheckButtons(win)
          
 def Generatefield():
@@ -158,16 +171,19 @@ def Playmode2():
                 break
         #CheckButtons()
     run_button.deactivate()
+    encontrar_caminho(Obstacles, myrobot.getPos(), Goal[0], win, Path)
     Run2()
     
 def Run2():
     print('-----------Run2-------------')
     print(len(Obstacles),'Obstacles')
     print(len(Goal),'Goals')
-    
+    print(len(Path),'Points')
     #Lucas
-    encontrar_caminho(Obstacles, myrobot.getPos(), Goal[0], myrobot, win, Path)
     
+    
+    for i in Path:
+        Clock(i.getX(),i.getY())
     
     #Afonso
     '''lstPath = []
@@ -191,7 +207,8 @@ def Run2():
                 Clock(ii.getX(),ii.getY())
                 time.sleep(0.2)'''
     print('-----------done-------------')
-    
+    clicktoreset = win.getMouse()
+    Reset()
 def Playmode3():
     GameMode = 3
     print('GameMode is now ', GameMode)
@@ -228,14 +245,13 @@ def Run3file():
     win2 = 0
     print('Run3file')
     width,height = Filereader()
-    win3 = GraphWin("Mode 3", width, height, autoflush=False)
-    width1 = width/800 * 800
-    height1 = height/600 * 600
-    xratio = 100/width1
-    yratio = -100/height1
+    
+    
+    xratio = 100/width
+    yratio = 100/height
     print(xratio)
     print(yratio)
-    init2(win3, xratio, yratio)
+    init2(width, height)
     
 
     clicktoclose = win.getMouse()
@@ -275,75 +291,77 @@ def Run3random():
     Run2()
     pass
 
-def init2(win,xratio,yratio):
-    win.setCoords(0.0,0.0,100.0,100.0)
+def init2(width,height): #transformar coisas redondas
+    win3 = GraphWin("Mode 3", width, height, autoflush=False)
+    mx = 100/width
+    my = 100/height
+    win3.setCoords(0.0,0.0,100.0,100.0)
     
-    rec1_2 = Rectangle(Point((WindowWidth-TabSize/2-15)*xratio,(ButtonsVerticalSpacement-5)*yratio),Point((WindowWidth-TabSize/2+14)*xratio,(ButtonsVerticalSpacement-6)*yratio))
-    rec2_2 = Rectangle(Point((WindowWidth-TabSize/2-15)*xratio,(ButtonsVerticalSpacement+6)*yratio),Point((WindowWidth-TabSize/2+14)*xratio,(ButtonsVerticalSpacement+5)*yratio))
-    rec3_2 = Rectangle(Point((WindowWidth-TabSize/2-15)*xratio,(ButtonsVerticalSpacement+6)*yratio),Point((WindowWidth-TabSize/2-14)*xratio,(ButtonsVerticalSpacement-6)*yratio))
-    rec4_2 = Rectangle(Point((WindowWidth-TabSize/2+14)*xratio,(ButtonsVerticalSpacement+6)*yratio),Point((WindowWidth-TabSize/2+13)*xratio,(ButtonsVerticalSpacement-6)*yratio))
-    rec5_2 = Rectangle(Point((WindowWidth-TabSize/2+17)*xratio,(ButtonsVerticalSpacement+5)*yratio),Point((WindowWidth-TabSize/2+16)*xratio,(ButtonsVerticalSpacement-5)*yratio))
+    rec1_2 = Rectangle(Point(95,95),Point(97,96))
+    rec2_2 = Rectangle(Point(95,93),Point(97,94))
+    rec3_2 = Rectangle(Point(91,91),Point(97,92))
+    rec4_2 = Rectangle(Point(90,95),Point(91,98))
+    rec5_2 = Rectangle(Point(80,80),Point(85,82))
     
-    rec1_2.draw(win)
-    rec2_2.draw(win)
-    rec3_2.draw(win)
-    rec4_2.draw(win)
-    rec5_2.draw(win)
+    rec1_2.draw(win3)
+    rec2_2.draw(win3)
+    rec3_2.draw(win3)
+    rec4_2.draw(win3)
+    rec5_2.draw(win3)
     
     global bar1
-    bar1 = Rectangle(Point((WindowWidth-TabSize/2-12)*xratio,(ButtonsVerticalSpacement+4)*yratio),Point((WindowWidth-TabSize/2-7)*xratio,(ButtonsVerticalSpacement-3)*yratio))
+    bar1 = Rectangle(Point(3,3),Point(4,4))
     bar1.setFill('green3')
     bar1.setWidth(0)
-    bar1.draw(win)
+    bar1.draw(win3)
     
     global bar2
-    bar2 = Rectangle(Point((WindowWidth-TabSize/2-6)*xratio,(ButtonsVerticalSpacement+4)*yratio),Point((WindowWidth-TabSize/2-1)*xratio,(ButtonsVerticalSpacement-3)*yratio))
+    bar2 = Rectangle(Point(5,5),Point(6,10))
     bar2.setFill('green3')
     bar2.setWidth(0)
-    bar2.draw(win)
+    bar2.draw(win3)
     
     global bar3
-    bar3 = Rectangle(Point((WindowWidth-TabSize/2)*xratio,(ButtonsVerticalSpacement+4)*yratio),Point((WindowWidth-TabSize/2+5)*xratio,(ButtonsVerticalSpacement-3)*yratio))
+    bar3 = Rectangle(Point(15,15),Point(16,20))
     bar3.setFill('green3')
     bar3.setWidth(0)
-    bar3.draw(win)
+    bar3.draw(win3)
     
     global bar4
-    bar4 = Rectangle(Point((WindowWidth-TabSize/2+6)*xratio,(ButtonsVerticalSpacement+4)*yratio),Point((WindowWidth-TabSize/2+11)*xratio,(ButtonsVerticalSpacement-3)*yratio))
+    bar4 = Rectangle(Point(2,20),Point(3,22))
     bar4.setFill('green3')
     bar4.setWidth(0)
-    bar4.draw(win)
+    bar4.draw(win3)
     
     global Dock
-    Dock = l
-    Dock = Circle(Point((WindowWidth/2)*xratio,WindowHeight*yratio), 50)
+    #Dock = Oval()
+    Dock = Circle(Point(50,50), 5)
     Dock.setFill("light grey")
-    Dock.draw(win)
-    
+    Dock.draw(win3)
     bars.append(bar1)
     bars.append(bar2)
     bars.append(bar3)
     bars.append(bar4)
     
-    RightCharger = Charger((WindowWidth - TabSize - 20)*xratio, 20*yratio, win, xratio, yratio)
-    LeftCharger = Charger((TabSize + 20)*xratio, 20*yratio, win, xratio, yratio)
+    RightCharger = Charger(3.25, 95, win3, mx,my)
+    LeftCharger = Charger(96.75,95, win3, mx,my)
     Chargers.append(RightCharger)
     Chargers.append(LeftCharger)
     
     global batteryinfo
-    batteryinfo = Text(Point((WindowWidth - TabSize/2)*xratio, 100*yratio), '100 %')
+    batteryinfo = Text(Point(80,80), '100 %')
     batteryinfo.setFace('courier')
     batteryinfo.setSize(10)
-    batteryinfo.draw(win)
+    batteryinfo.draw(win3)
     
     global batterylabel
-    batterylabel = Text(Point((WindowWidth - TabSize/2)*xratio, 80*yratio), 'Battery')
+    batterylabel = Text(Point(18, 80), 'Battery')
     batterylabel.setFace('courier')
     batterylabel.setSize(10)
-    batterylabel.draw(win)
+    batterylabel.draw(win3)
     
     global myrobot
-    myrobot = Harve((WindowWidth/2)*xratio, WindowHeight*yratio, 100, 1, win, Chargers)
+    myrobot = Harve(50,0, 100, 1, win3, Chargers)
     
 def init(win):
     rec1.draw(win)
@@ -418,6 +436,11 @@ def CheckButtons(win):
 def IsInside(x,y):
     return (TabSize < x < (WindowWidth - TabSize))
 def Reset():
+    '''
+    if type(win2) != "Point":
+        win2.close()
+    if type(win2) != "Point":
+        win3.close()'''
     reset_button.deactivate()
     play1_button.activate()
     play2_button.activate()
@@ -453,7 +476,8 @@ def Reset():
     Obstacles.clear()
     for i in Goal:
         i.undraw()
-    Goal.clear()   
+    Goal.clear()
+
 def Quit():
     win.close()
 
