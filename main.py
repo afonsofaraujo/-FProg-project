@@ -141,6 +141,7 @@ def Run1():
     infolabel3.setFace('courier')
     infolabel3.setSize(10)
     infolabel3.draw(win)
+    clicktoreset = win.getMouse()
     infolabel3.undraw()
     Reset()
     CheckButtons(win)
