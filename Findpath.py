@@ -5,11 +5,11 @@ Created on Mon Jun 20 17:50:38 2022
 @author: Afonso Araújo
 """
 
-from graphics import *
-from Harve import *
-
 import math
 import time
+
+from graphics import *
+from Harve import *
 
 def distance(a, b):
     return math.sqrt((a.getX()-b.getX())**2+(a.getY()-b.getY())**2)

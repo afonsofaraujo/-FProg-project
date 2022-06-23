@@ -5,29 +5,30 @@ Created on Mon Apr  4 16:06:23 2022
 @author: Afonso Araújo
 """
 
+#from math import *
+from math import sin, cos, atan, radians, sqrt
+
 from graphics import *
 
-from math import *
-
 class Harve:
-    def __init__(self, PosX, PosY, Battery, velocity, win, Chargers):
+    def __init__(self, posX, posY, battery, velocity, win, Chargers):
         self.Chargers = Chargers
-        self.PosX = PosX
-        self.PosY = PosY
-        self.Pos = Point(self.PosX,self.PosY)
-        self.Battery = Battery
+        self.PosX = posX
+        self.PosY = posY
+        self.Pos = Point(posX, posY)
+        self.Battery = battery
         self.Batterylevel = 4
         self.Velocity = velocity
         self.Window = win
-        self.body = Circle(Point(PosX, PosY),10)
+        self.body = Circle(Point(posX, posY),10)
         self.body.setFill('black')
         self.body.draw(win)
-        self.light = Circle(Point(PosX, PosY-5),3)
+        self.light = Circle(Point(posX, posY-5),3)
         self.light.setFill('green')
         self.light.draw(win)
         self.xvel = 0
         self.yvel = 0
-    
+
     def batterylight(self):
         '''updates the color of the light according to battery percentage'''
         if 75<=self.Battery<=100:
@@ -42,7 +43,7 @@ class Harve:
         elif self.Battery<25:
             self.light.setFill('red')
             self.Batterylevel = 1
-   
+
     def Move(self, dx, dy):
         '''robot moves its position dx and dy given in the input'''
         self.body.move(dx, dy)
@@ -52,7 +53,7 @@ class Harve:
         self.Pos = Point(self.PosX,self.PosY)
         self.Battery = self.Battery - 0.1
         self.batterylight()
-        
+
     def Seek(self, x, y):
         '''makes the robot move in a straight line from its position to x and y given in the input'''
         deltax = abs(self.PosX - x)
@@ -69,14 +70,14 @@ class Harve:
             self.yvel = -self.yvel
             
         self.Move(self.xvel, self.yvel)
-        
+
     def Goto(self, x, y):
         self.Velocity = 5
         while sqrt(abs((x-self.PosX**2)+(y-self.PosY**2))) > 2:
             self.Window.getMouse()
             self.Seek(x , y)
             time.sleep(0.5)        
-        
+
     def Sonar(self, Objects):         
         '''returns the closest object'''
         min_distance = 9999
@@ -107,7 +108,7 @@ class Harve:
         time.sleep(1)
         Object.undraw()
         del Object
-        
+
     def Charge(self):
         '''charges the battery if the robot is inside charging zone'''
         for i in self.Chargers:
@@ -117,32 +118,32 @@ class Harve:
                 if self. Battery >= 100:
                     self.battery = 100
                     break
-                
+
     def undraw(self):
         '''undraw robot'''
         self.body.undraw()
         self.light.undraw()
-        
+
     def draw(self, win):
         self.body.draw(win)
         self.light.undraw()
-        
+
     def delete(self):
         '''deletes robot'''
         del self
-            
+
     def getX(self):
         '''returns PosX of the robot'''
         return self.PosX
-    
+
     def getY(self):
         '''returns PosY of the robot'''
         return self.PosY
-    
+
     def getPos(self):
         '''returns Point where the robot is'''
         return Point(self.PosX,self.PosY)
-    
+
     def getBattery(self):
         '''returns battery of the robot'''
         if self.Battery > 100:

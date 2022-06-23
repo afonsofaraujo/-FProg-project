@@ -5,6 +5,10 @@ Created on Mon Apr  4 16:00:15 2022
 @author: Afonso Araújo
 """
 
+from random import randint
+import time
+from tkinter import filedialog as fd
+
 from graphics import *
 from Harve import *
 from Tree import *
@@ -13,10 +17,6 @@ from Obstacle import *
 from Button_modified import *
 from math import *
 from Findpath import *
-
-import random
-import time
-from tkinter import filedialog as fd
 
 
 #Global Lists
@@ -49,8 +49,8 @@ LeftTab.setFill("light grey")
 RightTab = Rectangle(Point(WindowWidth - TabSize, WindowHeight), Point(WindowWidth, 0))
 RightTab.setFill("light grey")
 
-rec1 = Rectangle(Point(WindowWidth-TabSize/2-15,ButtonsVerticalSpacement -5),Point(WindowWidth-TabSize/2 +14,ButtonsVerticalSpacement-6))
-rec2 = Rectangle(Point(WindowWidth-TabSize/2-15,ButtonsVerticalSpacement +6),Point(WindowWidth-TabSize/2 +14,ButtonsVerticalSpacement+5))
+rec1 = Rectangle(Point(WindowWidth-TabSize/2-15,ButtonsVerticalSpacement-5),Point(WindowWidth-TabSize/2+14,ButtonsVerticalSpacement-6))
+rec2 = Rectangle(Point(WindowWidth-TabSize/2-15,ButtonsVerticalSpacement+6),Point(WindowWidth-TabSize/2+14,ButtonsVerticalSpacement+5))
 rec3 = Rectangle(Point(WindowWidth-TabSize/2-15,ButtonsVerticalSpacement+6),Point(WindowWidth-TabSize/2-14,ButtonsVerticalSpacement-6))
 rec4 = Rectangle(Point(WindowWidth-TabSize/2+14,ButtonsVerticalSpacement+6),Point(WindowWidth-TabSize/2+13,ButtonsVerticalSpacement-6))
 rec5 = Rectangle(Point(WindowWidth-TabSize/2+17,ButtonsVerticalSpacement+5),Point(WindowWidth-TabSize/2+16,ButtonsVerticalSpacement-5))
@@ -117,6 +117,7 @@ def Playmode1():
                 run_button.activate()
                 CheckButtons(win)
                 break
+            
 def Run1():
     run_button.deactivate()
     reset_button.deactivate()
@@ -144,11 +145,11 @@ def Run1():
     CheckButtons(win)
          
 def Generatefield():
-    Obstacles.append(Obstacle(random.randint(TabSize+20,780-TabSize), random.randint(TabSize+20,580-TabSize), 0, win))
-    Obstacles.append(Obstacle(random.randint(TabSize+20,780-TabSize), random.randint(TabSize+20,580-TabSize), 0, win))
-    Obstacles.append(Obstacle(random.randint(TabSize+20,780-TabSize), random.randint(TabSize+20,580-TabSize), 1, win))
-    Obstacles.append(Obstacle(random.randint(TabSize+20,780-TabSize), random.randint(TabSize+20,580-TabSize), 2, win))
-    Obstacles.append(Obstacle(random.randint(TabSize+20,780-TabSize), random.randint(TabSize+20,580-TabSize), 2, win))   
+    Obstacles.append(Obstacle(randint(TabSize+20,780-TabSize), randint(TabSize+20,580-TabSize), 0, win))
+    Obstacles.append(Obstacle(randint(TabSize+20,780-TabSize), randint(TabSize+20,580-TabSize), 0, win))
+    Obstacles.append(Obstacle(randint(TabSize+20,780-TabSize), randint(TabSize+20,580-TabSize), 1, win))
+    Obstacles.append(Obstacle(randint(TabSize+20,780-TabSize), randint(TabSize+20,580-TabSize), 2, win))
+    Obstacles.append(Obstacle(randint(TabSize+20,780-TabSize), randint(TabSize+20,580-TabSize), 2, win))   
     
 def Playmode2():
     GameMode = 2
@@ -423,6 +424,7 @@ def CheckButtons(win):
 
 def IsInside(x,y):
     return (TabSize < x < (WindowWidth - TabSize))
+
 def Reset():
     '''
     if type(win2) != "Point":

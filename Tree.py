@@ -17,16 +17,16 @@ class Tree:
         self.leaves.setFill('green')
         self.trunk.draw(win)
         self.leaves.draw(win)
-        
+
     def undraw(self):
         self.trunk.undraw() 
         self.leaves.undraw()
-               
+
     def delete(self):
         del self
-        
+
     def getX(self):
         return self.PosX
-    
+
     def getY(self):
         return self.PosY
