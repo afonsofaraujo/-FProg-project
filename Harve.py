@@ -6,6 +6,7 @@ Created on Mon Apr  4 16:06:23 2022
 """
 
 from graphics import *
+
 from math import *
 
 class Harve:
@@ -74,9 +75,7 @@ class Harve:
         while sqrt(abs((x-self.PosX**2)+(y-self.PosY**2))) > 2:
             self.Window.getMouse()
             self.Seek(x , y)
-            time.sleep(0.5)
-        
-        
+            time.sleep(0.5)        
         
     def Sonar(self, Objects):         
         '''returns the closest object'''

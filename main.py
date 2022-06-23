@@ -10,16 +10,16 @@ from Harve import *
 from Tree import *
 from Charger import *
 from Obstacle import *
-#from PathplanningRRT import *
 from Button_modified import *
 from math import *
 from Findpath import *
+
 import random
 import time
 from tkinter import filedialog as fd
 
 
-#Global lists
+#Global Lists
 Obstacles = []
 Goal = []
 Objects = []   
@@ -33,32 +33,33 @@ win2 = Point(0,0)
 global win3
 win3 = Point(0,0)
 
-
-#Variables
-#global GameMode
-GameMode = 0   #default 0
+#GLobal Variables
+GameMode = 0 #0 mean no gamemode
 WindowWidth = 800
 WindowHeight = 600
 TabSize = 100
 ButtonsVerticalSpacement = 50
 ButtonsHeight = 30
-ObstaclesSize = 5               #radius
+ObstaclesSize = 5 #Radius
+
+#Global Objects
 win = GraphWin("GAME", WindowWidth, WindowHeight, autoflush=False)
 LeftTab = Rectangle(Point(0,WindowHeight), Point(TabSize,0))
 LeftTab.setFill("light grey")
 RightTab = Rectangle(Point(WindowWidth - TabSize, WindowHeight), Point(WindowWidth, 0))
 RightTab.setFill("light grey")
+
 rec1 = Rectangle(Point(WindowWidth-TabSize/2-15,ButtonsVerticalSpacement -5),Point(WindowWidth-TabSize/2 +14,ButtonsVerticalSpacement-6))
 rec2 = Rectangle(Point(WindowWidth-TabSize/2-15,ButtonsVerticalSpacement +6),Point(WindowWidth-TabSize/2 +14,ButtonsVerticalSpacement+5))
 rec3 = Rectangle(Point(WindowWidth-TabSize/2-15,ButtonsVerticalSpacement+6),Point(WindowWidth-TabSize/2-14,ButtonsVerticalSpacement-6))
 rec4 = Rectangle(Point(WindowWidth-TabSize/2+14,ButtonsVerticalSpacement+6),Point(WindowWidth-TabSize/2+13,ButtonsVerticalSpacement-6))
 rec5 = Rectangle(Point(WindowWidth-TabSize/2+17,ButtonsVerticalSpacement+5),Point(WindowWidth-TabSize/2+16,ButtonsVerticalSpacement-5))
-
 rec1.setFill('black')
 rec2.setFill('black')
 rec3.setFill('black')
 rec4.setFill('black')
 rec5.setFill('black')
+
 
 def main():
     global play1_button
