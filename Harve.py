@@ -13,7 +13,7 @@ class Harve:
         self.Chargers = Chargers
         self.PosX = PosX
         self.PosY = PosY
-        self.Pos = Point
+        self.Pos = Point(self.PosX,self.PosY)
         self.Battery = Battery
         self.Batterylevel = 4
         self.Velocity = velocity
@@ -56,6 +56,8 @@ class Harve:
         '''makes the robot move in a straight line from its position to x and y given in the input'''
         deltax = abs(self.PosX - x)
         deltay = abs(self.PosY - y)
+        
+        
         angle = atan(deltay/deltax)
         theta = radians(angle)
         self.xvel = cos(angle) * self.Velocity
@@ -66,6 +68,15 @@ class Harve:
             self.yvel = -self.yvel
             
         self.Move(self.xvel, self.yvel)
+        
+    def Goto(self, x, y):
+        self.Velocity = 5
+        while sqrt(abs((x-self.PosX**2)+(y-self.PosY**2))) > 2:
+            self.Window.getMouse()
+            self.Seek(x , y)
+            time.sleep(0.5)
+        
+        
         
     def Sonar(self, Objects):         
         '''returns the closest object'''
@@ -115,7 +126,7 @@ class Harve:
         
     def draw(self, win):
         self.body.draw(win)
-        self.light.undraw(win)
+        self.light.undraw()
         
     def delete(self):
         '''deletes robot'''

@@ -89,10 +89,16 @@ def calcular_angulo(Obstacles, Pinicial, goal):
     deltas = 0
     
     for ii in range (len(lst2)):
-        deltas += ((lst2[ii])-Dinicial)*lst4[ii]
-        T += lst2[ii]-Dinicial
+        deltas += ((Dinicial-lst2[ii]))*lst4[ii]
+        T += Dinicial-lst2[ii]
         
     varang = (deltas/T)
+    
+    if varang<0:
+        varang += 2*math.pi
+        
+    if 2*math.pi<varang:
+        varang -= 2*math.pi
     
     # CASO O ROBO ESTEJA EM ROTA DE COLISÃO
     for i in Obstacles:
@@ -116,20 +122,25 @@ def calcular_angulo(Obstacles, Pinicial, goal):
                 varang = ang2
             
     #-------------------------------------------------------------------------------------------------------
-                    
+    
+    if varang<0:
+        varang += 2*math.pi
+        
+    if 2*math.pi<varang:
+        varang -= 2*math.pi
+    
     return varang
 
 def encontrar_caminho(Obstacles, Pinicial, goal, win, Path):
-    if distance(Pinicial, goal)>10:
+    if distance(Pinicial, goal)>20:
         ang = calcular_angulo(Obstacles, Pinicial, goal)
-        Pinicial.move(10*math.cos(ang), 10*math.sin(ang))
+        Pinicial.move(20*math.cos(ang), 20*math.sin(ang))
         #robot.Move(10*math.cos(ang), 10*math.sin(ang))
         
         #time.sleep(0.1)
-        print(distance(Pinicial, goal))
         pt = Point(Pinicial.getX(), Pinicial.getY())
-        pt.draw(win)
-        Path.append(Point(Pinicial.getX(), Pinicial.getY()))
+        #Path.append(Point(Pinicial.getX(), Pinicial.getY()))
+        Path.append(pt)
                 
         encontrar_caminho(Obstacles, Pinicial, goal, win, Path)
         

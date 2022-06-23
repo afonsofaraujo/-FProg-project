@@ -133,7 +133,12 @@ def Run1():
             print('-----------done-------------')
             reset_button.activate()
             break
+    infolabel3 = Text(Point(WindowWidth/2,WindowHeight/2),"Click to Reset")
+    infolabel3.setFace('courier')
+    infolabel3.setSize(10)
+    infolabel3.draw(win)
     clicktoreset = win.getMouse()
+    infolabel3.undraw()
     Reset()
     CheckButtons(win)
          
@@ -161,7 +166,7 @@ def Playmode2():
         if click != None:
             a = True
             for i in Obstacles:
-                if distance(Point(i.PosX,i.PosY), Point(click.getX(),click.getY())) < 10:
+                if distance(Point(i.PosX,i.PosY), Point(click.getX(),click.getY())) < 20:
                     a = False
             if IsInside(click.getX(), click.getY()) and a:
                 Goal.append(Tree(click.getX(), click.getY(), win))
@@ -180,35 +185,20 @@ def Run2():
     print(len(Goal),'Goals')
     print(len(Path),'Points')
     #Lucas
-    
-    
+    for point in Path:
+        point.draw(win)
+        
     for i in Path:
-        Clock(i.getX(),i.getY())
-    
-    #Afonso
-    '''lstPath = []
-    
-    #st
-    for i in Goal:
-        print(myrobot.getPos())
-        Path = pathplanning(Obstacles, i, myrobot.getPos())
-        print('Path: ',len(Path))   
-        for ii in Path:
-            c = Point(ii.getX(),ii.getY())
-            c.setFill('red')
-            c.draw(win)
-            time.sleep(0.1)
-       # lstPath.append(Path)
+        while distance(i, myrobot.Pos)>2:
+            update(30)
+            Clock(i.getX(),i.getY())
+        Path.remove(i)
    
-    #move              
-    for i in lstPath:                    
-        for ii in i:
-            while distance(myrobot,ii)>10:
-                Clock(ii.getX(),ii.getY())
-                time.sleep(0.2)'''
     print('-----------done-------------')
     clicktoreset = win.getMouse()
     Reset()
+    
+
 def Playmode3():
     GameMode = 3
     print('GameMode is now ', GameMode)
@@ -293,9 +283,6 @@ def Run3random():
 
 def init2(width,height): #transformar coisas redondas
     win3 = GraphWin("Mode 3", width, height, autoflush=False)
-    mx = 100/width
-    my = 100/height
-    win3.setCoords(0.0,0.0,100.0,100.0)
     
     rec1_2 = Rectangle(Point(95,95),Point(97,96))
     rec2_2 = Rectangle(Point(95,93),Point(97,94))
@@ -481,6 +468,9 @@ def Reset():
 def Quit():
     win.close()
 
+def gotoPoint(obsX, obsY):
+    print(" ")
+    
 def Clock(obsX, obsY):       #Harve module after this
     for i in bars:
         i.undraw()
@@ -506,6 +496,7 @@ def Clock(obsX, obsY):       #Harve module after this
         
     myrobot.Charge()
     batteryinfo.setText(str(myrobot.getBattery()) +' %')
+    
     time.sleep(0.01)
     myrobot.Seek(obsX, obsY)
 
