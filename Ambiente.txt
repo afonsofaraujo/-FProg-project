@@ -1,7 +1,7 @@
 Tamanho da janela de simulação:
-800 600
+600 400
 Localização dos obstáculos (type, PosX, PosY):
-0 5 5
+0 40 70
 1 20 40
 2 50 50
-0 90 10
+0 80 10

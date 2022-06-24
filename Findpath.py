@@ -133,20 +133,17 @@ def calcular_angulo(Obstacles, Pinicial, goal):
     return varang
 
 
-def encontrar_caminho(Obstacles, Pinicial, goal, win, Path):
+def Findpath(Obstacles, Pinicial, goal, win, Path):
     if distance(Pinicial, goal)>20:
         ang = calcular_angulo(Obstacles, Pinicial, goal)
         Pinicial.move(20*math.cos(ang), 20*math.sin(ang))
-
-        # time.sleep(0.1)
         pt = Point(Pinicial.getX(), Pinicial.getY())
-        # Path.append(Point(Pinicial.getX(), Pinicial.getY()))
         Path.append(pt)
 
-        encontrar_caminho(Obstacles, Pinicial, goal, win, Path)
+        Findpath(Obstacles, Pinicial, goal, win, Path)
 
     else:
         Pinicial.move((goal.getX()-Pinicial.getX()), (goal.getY()-Pinicial.getY()))
         Path.append(Point(Pinicial.getX(), Pinicial.getY()))
-        # robot.Move((goal.getX()-Pinicial.getX()), (goal.getY()-Pinicial.getY()))
-        print("feito")
+
+

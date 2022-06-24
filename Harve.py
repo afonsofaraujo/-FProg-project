@@ -9,7 +9,6 @@ from math import sin, cos, atan, sqrt
 
 from graphics import *
 
-
 class Harve:
     def __init__(self, posX, posY, battery, velocity, win, Chargers):
         self.Chargers = Chargers
@@ -69,13 +68,6 @@ class Harve:
 
         self.Move(self.xvel, self.yvel)
 
-    def Goto(self, x, y):
-        self.Velocity = 5
-        while sqrt(abs((x-self.PosX**2)+(y-self.PosY**2))) > 2:
-            self.Window.getMouse()
-            self.Seek(x, y)
-            time.sleep(0.5)
-
     def Sonar(self, Objects):
         '''returns the closest object'''
         min_distance = 9999
@@ -87,15 +79,15 @@ class Harve:
                 min_object = i
         return min_object
 
-    def Stop(self, Objects):
+    def Stop(self, Goal):
         '''checks the need to stop and returns 1 if so'''
         min_distance = 9999
-        min_object = Point(0, 0)
-        for i in Objects:
+        min_goal = Point(0, 0)
+        for i in Goal:
             distance = sqrt((self.PosX - i.getX())**2 + (self.PosY - i.getY())**2)
             if distance < min_distance:
                 min_distance = distance
-                min_object = i
+                min_goal = i
         if min_distance < 20:
             return 1
         else:
@@ -105,7 +97,7 @@ class Harve:
         '''robot pauses to collect the input object and deletes it '''
         time.sleep(1)
         Object.undraw()
-        del Object
+        Object.delete()
 
     def Charge(self):
         '''charges the battery if the robot is inside charging zone'''
