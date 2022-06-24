@@ -208,7 +208,6 @@ def Run1():
             reset_button.activate()
             break
     infolabel3.draw(win)
-    reset_button.activate()
     clicktoreset = win.getMouse()
     infolabel3.undraw()
     Reset()
@@ -282,7 +281,6 @@ def Run2():
                     if myrobot.Battery >=100:
                         break
     infolabel3.draw(win)
-    reset_button.activate()
     clicktoreset = win.getMouse()
     infolabel3.undraw()
     Reset()
@@ -854,7 +852,7 @@ def Reset():
     play3_button.activate()
     play4_button.activate()
     reset_button.deactivate()
-    run_button.activate()
+    run_button.deactivate()
     rec1.undraw()
     rec2.undraw()
     rec3.undraw()
@@ -887,9 +885,6 @@ def Reset():
         i.undraw()
         i.delete()
     Goal.clear()
-    if GameMode == 2:
-        Playmode2()
-
 
 
 def Clock(obsX, obsY, myrobot, win):
