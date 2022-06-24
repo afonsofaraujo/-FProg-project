@@ -108,9 +108,11 @@ def main():
         CheckButtons(win)
         
 def Quit():
+    '''Closes win'''
     win.close()
         
 def CheckButtons(win):
+    '''checks if there was a click on a given window and executes the button's function if clicked inside'''
     mouse = win.checkMouse()
     if mouse != None:
         for Button in Buttons:
@@ -119,10 +121,12 @@ def CheckButtons(win):
                 Button.deactivate()
                 return True        
 
-def IsInside(x,y,):
+def IsInside(x,y):
+    '''returns True if (x,y) is inside''' 
     return (TabSize < x < (WindowWidth - TabSize))
 
 def Generatefield(win):
+    '''generates obstacles in random positions and appends them in Obstacles list'''
     Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), 0, win))
     Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), 0, win))
     Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), 1, win))
@@ -142,7 +146,6 @@ def Filereader():
 
 def Playmode1():
     '''initializes Mode 1'''
-    print('-----------Playmode1file-------------')
     GameMode = 1
     run_button.changehandler(Run1)
     print('GameMode is now ', GameMode)
@@ -179,7 +182,6 @@ def Playmode1():
 
 def Run1():
     '''Runs Mode 1'''
-    print('-----------Run1-------------')
     run_button.deactivate()
     reset_button.deactivate()
     while True:
@@ -196,7 +198,6 @@ def Run1():
         if myrobot.getX() - myrobot.Sonar(Chargers).getX() < 1 and myrobot.getY() - myrobot.Sonar(Chargers).getY() < 1:
             reset_button.activate()
             break
-    print('-----------done-------------')
     infolabel3.draw(win)
     clicktoreset = win.getMouse()
     infolabel3.undraw()
@@ -206,7 +207,6 @@ def Playmode2():
     '''initializes Mode 2'''
     GameMode = 2
     run_button.changehandler(Run2)
-    print('GameMode is now ', GameMode)
     init(win)
     play1_button.deactivate()
     play2_button.deactivate()
@@ -236,7 +236,6 @@ def Playmode2():
 
 def Run2():
     '''Runs Mode 2'''
-    print('-----------Run2-------------')
     run_button.deactivate()
     Findpath(Obstacles, myrobot.getPos(), Goal[0], win, Path)
     for point in Path:
@@ -272,16 +271,14 @@ def Run2():
                     Clock(point.getX(), point.getY(), myrobot,win)
                     if myrobot.Battery >=100:
                         break
-                   
-    print('-----------done-------------')
     infolabel3.draw(win)
     clicktoreset = win.getMouse()
     infolabel3.undraw()
     Reset()
 
 def Playmode3():
+    '''initializes Mode 3 - Choose'''
     GameMode = 3
-    print('GameMode is now ', GameMode)
     play1_button.deactivate()
     play2_button.deactivate()
     play3_button.deactivate()
@@ -296,7 +293,7 @@ def Playmode3():
         CheckButtons(win2)
 
 def Playmode3file():
-    print('-----------Playmode3file-------------')
+    '''initializes Mode 3 - Read from a file selection'''
     win2.close()
     Buttons.clear()
     width, height, filename = Filereader()
@@ -353,7 +350,7 @@ def Playmode3file():
     Run3file(width,height)
 
 def Run3file(width,height):
-    print('-----------Run3file-------------')
+    '''Runs Mode 3 - Read from a file selection'''
     infolabel6 = Text(Point(width/2, height/2), "Click to Quit")
     infolabel6.setFace('courier')
     infolabel6.setSize(10)
@@ -390,7 +387,6 @@ def Run3file(width,height):
                     Clock(point.getX(), point.getY(), myrobot2,win3)
                     if myrobot2.Battery >=100:
                         break
-    print('-----------done-------------')
     infolabel6.draw(win3)
     clicktoclose = win3.getMouse()
     infolabel6.undraw()
@@ -398,7 +394,7 @@ def Run3file(width,height):
     win.close()
     
 def Playmode3random():
-    print('-----------Playmode3random-------------')
+    '''initializes Mode 3 - Random map selection'''
     win2.close()
     width = WindowWidth
     height = WindowHeight
@@ -448,7 +444,7 @@ def Playmode3random():
     Run3random(width,height)
     
 def Run3random(width,height):
-    print('-----------Run3random-------------')
+    '''Runs 3 - Random map selection'''
     infolabel7 = Text(Point(width/2, height/2), "Click to Quit")
     infolabel7.setFace('courier')
     infolabel7.setSize(10)
@@ -484,7 +480,6 @@ def Run3random(width,height):
                     Clock(point.getX(), point.getY(), myrobot2, win4)
                     if myrobot2.Battery >=100:
                         break
-    print('-----------done-------------')
     infolabel7.draw(win4)
     clicktoclose = win4.getMouse()
     infolabel7.undraw()
@@ -492,6 +487,7 @@ def Run3random(width,height):
     win.close()
     
 def Playmode4():
+    '''initializes Mode 4 - Choose'''
     GameMode = 4
     print('GameMode is now ', GameMode)
     play1_button.deactivate()
@@ -508,7 +504,7 @@ def Playmode4():
         CheckButtons(win5)
 
 def Playmode4file():
-    print('-----------Playmode4file-------------')
+    '''initializes Mode 4 - Read from a file selection'''
     win5.close()
     Buttons.clear()
     width=WindowWidth
@@ -561,7 +557,7 @@ def Playmode4file():
     Run4file(width,height)
 
 def Run4file(width,height):
-    print('-----------Run4file-------------')
+    '''Runs Mode 4 - Read from a file selection'''
     infolabel6 = Text(Point(width/2, height/2), "Click to Quit")
     infolabel6.setFace('courier')
     infolabel6.setSize(10)
@@ -598,7 +594,6 @@ def Run4file(width,height):
                     Clock(point.getX(), point.getY(), myrobot2, win7)
                     if myrobot2.Battery >=100:
                         break
-    print('-----------done-------------')
     infolabel6.draw(win7)
     clicktoclose = win7.getMouse()
     infolabel6.undraw()
@@ -606,7 +601,7 @@ def Run4file(width,height):
     win.close()
     
 def Playmode4random():
-    print('-----------Playmode4random-------------')
+    '''initializes Mode 4 - Random map selection'''
     win5.close()
     width = WindowWidth
     height = WindowHeight
@@ -655,7 +650,7 @@ def Playmode4random():
     Run4random(width,height)
 
 def Run4random(width,height):
-    print('-----------Run4random-------------')
+    '''Runs Mode 4 - Random map selection'''
     infolabel7 = Text(Point(width/2, height/2), "Click to Quit")
     infolabel7.setFace('courier')
     infolabel7.setSize(10)
@@ -842,11 +837,12 @@ def init(win):
     myrobot = Harve(WindowWidth/2, WindowHeight, 100, 1, win, Chargers)
  
 def Reset():
-    reset_button.deactivate()
+    '''Resets win and clears Global Lists'''
     play1_button.activate()
     play2_button.activate()
     play3_button.activate()
     play4_button.activate()
+    reset_button.deactivate()
     run_button.deactivate()
     rec1.undraw()
     rec2.undraw()
@@ -860,14 +856,6 @@ def Reset():
     infolabel12.undraw()
     infolabel13.undraw()
     Dock.undraw()
-    
-    '''if type(myrobot) != 'undefined':  
-        myrobot.undraw()
-        myrobot.delete()
-    if type(myrobot2) != 'undefined':  
-        myrobot2.undraw()
-        myrobot2.delete()'''
-    
     myrobot.undraw()
     myrobot.delete()
     for i in Path:
@@ -889,7 +877,8 @@ def Reset():
         i.delete()
     Goal.clear()
 
-def Clock(obsX, obsY, myrobot, win):       #Harve module after this
+def Clock(obsX, obsY, myrobot, win):
+    '''Makes movement and updates battery bars in a given Window'''
     for i in bars:
         i.undraw()
     if myrobot.Batterylevel == 4:
@@ -911,8 +900,7 @@ def Clock(obsX, obsY, myrobot, win):       #Harve module after this
         for i in bars:
             i.setFill('red')
         bar1.draw(win)
-    
-    #infolabel5.setText(len(Goal))
+
     myrobot.Charge()
     batteryinfo.setText(str(myrobot.getBattery()) +' %')
     

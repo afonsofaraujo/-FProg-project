@@ -10,6 +10,7 @@ from math import sin, cos, atan, sqrt
 from graphics import *
 
 class Harve:
+    '''robot class'''
     def __init__(self, posX, posY, battery, velocity, win, Chargers):
         self.Chargers = Chargers
         self.PosX = posX
@@ -116,7 +117,7 @@ class Harve:
 
     def draw(self, win):
         self.body.draw(win)
-        self.light.undraw()
+        self.light.draw(win)
 
     def delete(self):
         '''deletes robot'''
