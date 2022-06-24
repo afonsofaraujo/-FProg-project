@@ -9,12 +9,12 @@ from graphics import *
 
 
 class Tree:
-    def __init__(self, PosX, PosY, win):
-        self.PosX = PosX
-        self.PosY = PosY
-        self.trunk = Rectangle(Point(PosX-2, PosY-5), Point(PosX+2, PosY+5))
+    def __init__(self, posX, posY, win):
+        self.PosX = posX
+        self.PosY = posY
+        self.trunk = Rectangle(Point(posX-2, posY-5), Point(posX+2, posY+5))
         self.trunk.setFill('brown')
-        self.leaves = Circle(Point(PosX, PosY-8), 5)
+        self.leaves = Circle(Point(posX, posY-8), 5)
         self.leaves.setFill('green')
         self.trunk.draw(win)
         self.leaves.draw(win)

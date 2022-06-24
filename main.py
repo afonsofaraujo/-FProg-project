@@ -35,6 +35,8 @@ TabSize = 100
 ButtonsVerticalSpacement = 50
 ButtonsHeight = 30
 ObstaclesSize = 5  # Radius
+ObstaclesNumber = 5  # Number of obstacles to generate
+ObstacleDistance = 20 # Minimum distance between 2 obstacles
 
 # Global Objects
 win = GraphWin("GAME", WindowWidth, WindowHeight, autoflush=False)
@@ -127,11 +129,18 @@ def IsInside(x,y):
 
 def Generatefield(win):
     '''generates obstacles in random positions and appends them in Obstacles list'''
-    Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), 0, win))
-    Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), 0, win))
-    Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), 1, win))
-    Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), 2, win))
-    Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), 2, win))  
+    Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), randint(0, 2), win))
+    while len(Obstacles) < ObstaclesNumber:
+        valid = True
+        NewObstacle = Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), randint(0, 2), win)
+        for Obstaclei in Obstacles:
+            ObstacleDistance = sqrt( ((NewObstacle.PosX-Obstaclei.PosX)**2)+((NewObstacle.PosY-Obstaclei.PosY)**2) )
+            if ObstacleDistance < (NewObstacle.radius + Obstaclei.radius):
+                valid = False
+                break;
+        if valid:
+            Obstacles.append(NewObstacle)
+
 
 def Filereader():
     '''opens a file dialog and returns width, height and filename'''
