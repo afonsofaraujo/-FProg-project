@@ -50,7 +50,7 @@ class Harve:
         self.PosX = self.PosX + dx
         self.PosY = self.PosY + dy
         self.Pos = Point(self.PosX, self.PosY)
-        self.Battery = self.Battery - 0.1
+        self.Battery = self.Battery - 0.05
         self.batterylight()
 
     def Seek(self, x, y):

@@ -26,10 +26,6 @@ Buttons = []
 Chargers = []
 bars = []
 Path = []
-global win2
-win2 = Point(0,0)
-global win3
-win3 = Point(0,0)
 
 # Global Variables
 GameMode = 0  # 0 mean no gamemode
@@ -58,15 +54,25 @@ rec3.setFill('black')
 rec4.setFill('black')
 rec5.setFill('black')
 
+infolabel4 = Text(Point(WindowWidth-TabSize/2, ButtonsVerticalSpacement*3), "Obstacles:")
+infolabel4.setFace('courier')
+infolabel4.setSize(10)
+
+infolabel5 = Text(Point(WindowWidth-TabSize/2, ButtonsVerticalSpacement*3.5), "0")
+infolabel5.setFace('courier')
+infolabel5.setSize(10)
+
+infolabel12 = Text(Point(WindowWidth-TabSize/2, ButtonsVerticalSpacement*4), "Trees:")
+infolabel12.setFace('courier')
+infolabel12.setSize(10)
+
+infolabel13 = Text(Point(WindowWidth-TabSize/2, ButtonsVerticalSpacement*4.5), "0")
+infolabel13.setFace('courier')
+infolabel13.setSize(10)
+
 infolabel3 = Text(Point(WindowWidth/2, WindowHeight/2), "Click to Reset")
 infolabel3.setFace('courier')
 infolabel3.setSize(10)
-infolabel4 = Text(Point(WindowWidth-TabSize/2, ButtonsVerticalSpacement*4), "Trees:")
-infolabel4.setFace('courier')
-infolabel4.setSize(10)
-infolabel5 = Text(Point(WindowWidth- TabSize/2 + 30, ButtonsVerticalSpacement*4), "0")
-infolabel5.setFace('courier')
-infolabel5.setSize(10)
 
 def main():
     global play1_button
@@ -124,6 +130,7 @@ def Generatefield(win):
     Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), 2, win))  
 
 def Filereader():
+    '''opens a file dialog and returns width, height and filename'''
     Lines = []
     filename = fd.askopenfilename()
     f = open(filename, "r")
@@ -134,6 +141,7 @@ def Filereader():
     return int(width), int(height), filename
 
 def Playmode1():
+    '''initializes Mode 1'''
     print('-----------Playmode1file-------------')
     GameMode = 1
     run_button.changehandler(Run1)
@@ -153,11 +161,16 @@ def Playmode1():
     infolabel2.setFace('courier')
     infolabel2.setSize(10)
     infolabel2.draw(win)
+    infolabel4.draw(win)
+    infolabel5.draw(win)
+    infolabel12.draw(win)
+    infolabel13.draw(win)
     while True:
         click1 = win.checkMouse()
         if click1 != None:
             if IsInside(click1.getX(), click1.getY()):
                 Goal.append(Tree(click1.getX(), click1.getY(), win))
+                infolabel13.setText(len(Goal))
                 infolabel1.undraw()
                 infolabel2.undraw()
                 run_button.activate()
@@ -165,6 +178,7 @@ def Playmode1():
                 break
 
 def Run1():
+    '''Runs Mode 1'''
     print('-----------Run1-------------')
     run_button.deactivate()
     reset_button.deactivate()
@@ -173,6 +187,8 @@ def Run1():
         Clock(myrobot.Sonar(Goal).getX(), myrobot.Sonar(Goal).getY(),myrobot,win)
         if myrobot.Stop(Goal) == 1:
             myrobot.Grab(myrobot.Sonar(Goal))
+            Goal.remove(myrobot.Sonar(Goal))
+            infolabel13.setText(len(Goal))
             break
     while True:
         CheckButtons(win)
@@ -187,6 +203,7 @@ def Run1():
     Reset()
 
 def Playmode2():
+    '''initializes Mode 2'''
     GameMode = 2
     run_button.changehandler(Run2)
     print('GameMode is now ', GameMode)
@@ -196,11 +213,12 @@ def Playmode2():
     play3_button.deactivate()
     play4_button.deactivate()
 
-    Generatefield(win)
-    
     infolabel4.draw(win)
     infolabel5.draw(win)
-    
+    infolabel12.draw(win)
+    infolabel13.draw(win)
+    Generatefield(win)
+    infolabel5.setText(len(Obstacles))
     while True:
         click = win.checkMouse()
         if click != None:
@@ -210,36 +228,51 @@ def Playmode2():
                     a = False
             if IsInside(click.getX(), click.getY()) and a:
                 Goal.append(Tree(click.getX(), click.getY(), win))
-                infolabel5.setText(str(len(Goal)))
+                infolabel13.setText(str(len(Goal)))
                 run_button.activate()
             if run_button.clicked(click):
                 break
-    run_button.deactivate()
     Run2()
 
 def Run2():
+    '''Runs Mode 2'''
     print('-----------Run2-------------')
-
+    run_button.deactivate()
     Findpath(Obstacles, myrobot.getPos(), Goal[0], win, Path)
     for point in Path:
         while distance(point, myrobot.Pos) > 1:
+            CheckButtons(win)
             update(200)
             Clock(point.getX(), point.getY(),myrobot,win)
             if myrobot.Stop(Goal) == 1:
                 myrobot.Grab(myrobot.Sonar(Goal))
                 Goal.remove(myrobot.Sonar(Goal))
-                break
+                infolabel13.setText(str(len(Goal)))
+                break       
     while len(Goal) > 0:
-        Path.clear()
-        Findpath(Obstacles, myrobot.getPos(), myrobot.Sonar(Goal), win, Path)
-        for point in Path:
-            while distance(point, myrobot.Pos) > 1:
-                update(200)
-                Clock(point.getX(), point.getY(), myrobot,win)
-                if myrobot.Stop(Goal) == 1:
-                    myrobot.Grab(myrobot.Sonar(Goal))
-                    Goal.remove(myrobot.Sonar(Goal))
-                    break
+        if myrobot.Battery >25:
+            Path.clear()
+            Findpath(Obstacles, myrobot.getPos(), myrobot.Sonar(Goal), win, Path)
+            for point in Path:
+                while distance(point, myrobot.Pos) > 1:
+                    CheckButtons(win)
+                    update(200)
+                    Clock(point.getX(), point.getY(), myrobot,win)
+                    if myrobot.Stop(Goal) == 1:
+                        myrobot.Grab(myrobot.Sonar(Goal))
+                        Goal.remove(myrobot.Sonar(Goal))
+                        infolabel13.setText(str(len(Goal)))
+                        break
+        else:
+            Path.clear()
+            Findpath(Obstacles, myrobot.getPos(), myrobot.Sonar(Chargers), win, Path)
+            for point in Path:
+                while distance(point, myrobot.Pos) > 1:
+                    update(200)
+                    Clock(point.getX(), point.getY(), myrobot,win)
+                    if myrobot.Battery >=100:
+                        break
+                   
     print('-----------done-------------')
     infolabel3.draw(win)
     clicktoreset = win.getMouse()
@@ -253,6 +286,7 @@ def Playmode3():
     play2_button.deactivate()
     play3_button.deactivate()
     play4_button.deactivate()
+    global win2
     win2 = GraphWin("Choose", WindowWidth/2, WindowHeight/2, autoflush=False)
     button_file = Button(win2, Point(WindowWidth/4, WindowHeight*(1/6)), 2*TabSize, 2*ButtonsHeight, "Read from a file", Playmode3file)
     button_random = Button(win2, Point(WindowWidth/4, WindowHeight*(2/6)), 2*TabSize, 2*ButtonsHeight, "Random map", Playmode3random)
@@ -263,6 +297,7 @@ def Playmode3():
 
 def Playmode3file():
     print('-----------Playmode3file-------------')
+    win2.close()
     Buttons.clear()
     width, height, filename = Filereader()
     global win3
@@ -271,6 +306,26 @@ def Playmode3file():
     global run_button_2
     run_button_2 = Button(win3, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Run", Run3file)
     run_button_2.deactivate()
+    
+    infolabel8 = Text(Point(width-TabSize/2, ButtonsVerticalSpacement*3),"Obstacles:")
+    infolabel8.setFace('courier')
+    infolabel8.setSize(10)
+    infolabel9 = Text(Point(width-TabSize/2, ButtonsVerticalSpacement*3.5),"0")
+    infolabel9.setFace('courier')
+    infolabel9.setSize(10)
+    infolabel10 = Text(Point(width-TabSize/2, ButtonsVerticalSpacement*4),"Trees:")
+    infolabel10.setFace('courier')
+    infolabel10.setSize(10)
+    global infolabel11
+    infolabel11 = Text(Point(width-TabSize/2, ButtonsVerticalSpacement*4.5),"0")
+    infolabel11.setFace('courier')
+    infolabel11.setSize(10)
+    
+    infolabel8.draw(win3)
+    infolabel9.draw(win3)
+    infolabel10.draw(win3)
+    infolabel11.draw(win3)
+    
     Lines = []
     f = open(filename, "r")
     for i in f:
@@ -278,8 +333,8 @@ def Playmode3file():
     for i in range(3, len(Lines)):
         Type, PosX, PosY = Lines[i].split(" ")
         Obstacles.append(Obstacle(TabSize + (float(PosX)/100)*(width-2*TabSize), (float(PosY)/100)*height, int(Type), win3))
+        infolabel9.setText(len(Obstacles))
     f.close()
-    Generatefield(win3)
     infolabel4.draw(win3)
     infolabel5.draw(win3)
     while True:
@@ -291,6 +346,7 @@ def Playmode3file():
                     a = False
             if TabSize<click.getX()<width-TabSize and a:
                 Goal.append(Tree(click.getX(), click.getY(), win3))
+                infolabel11.setText(len(Goal))
                 run_button_2.activate()
             if run_button_2.clicked(click):
                 break
@@ -310,36 +366,72 @@ def Run3file(width,height):
             if myrobot2.Stop(Goal) == 1:
                 myrobot2.Grab(myrobot2.Sonar(Goal))
                 Goal.remove(myrobot2.Sonar(Goal))
+                infolabel11.setText(len(Goal))
                 break
     while len(Goal) > 0:
-        Path.clear()
-        Findpath(Obstacles, myrobot2.getPos(), myrobot2.Sonar(Goal), win3, Path)
-        for point in Path:
-            while distance(point, myrobot2.Pos) > 1:
-                update(200)
-                Clock(point.getX(), point.getY(), myrobot2,win3)
-                if myrobot2.Stop(Goal) == 1:
-                    myrobot2.Grab(myrobot2.Sonar(Goal))
-                    Goal.remove(myrobot2.Sonar(Goal))
-                    break
+        if myrobot2.Battery >25:
+            Path.clear()
+            Findpath(Obstacles, myrobot2.getPos(), myrobot2.Sonar(Goal), win3, Path)
+            for point in Path:
+                while distance(point, myrobot2.Pos) > 1:
+                    update(200)
+                    Clock(point.getX(), point.getY(), myrobot2,win3)
+                    if myrobot2.Stop(Goal) == 1:
+                        myrobot2.Grab(myrobot2.Sonar(Goal))
+                        Goal.remove(myrobot2.Sonar(Goal))
+                        infolabel11.setText(len(Goal))
+                        break
+        else:
+            Path.clear()
+            Findpath(Obstacles, myrobot2.getPos(), myrobot2.Sonar(Chargers), win3, Path)
+            for point in Path:
+                while distance(point, myrobot2.Pos) > 1:
+                    update(200)
+                    Clock(point.getX(), point.getY(), myrobot2,win3)
+                    if myrobot2.Battery >=100:
+                        break
     print('-----------done-------------')
     infolabel6.draw(win3)
     clicktoclose = win3.getMouse()
     infolabel6.undraw()
     win3.close()
+    win.close()
     
 def Playmode3random():
     print('-----------Playmode3random-------------')
+    win2.close()
     width = WindowWidth
     height = WindowHeight
     global win4
     win4 = GraphWin("Mode 3", width, height, autoflush=False)
     init2(width, height, win4)
-    for i in range(4): 
-        Obstacles.append(Obstacle(TabSize + (randint(0,100)/100)*(width-2*TabSize), (randint(0,100)/100)*height, randint(0,3), win4))
+    
+    infolabel8 = Text(Point(width-TabSize/2, ButtonsVerticalSpacement*3),"Obstacles:")
+    infolabel8.setFace('courier')
+    infolabel8.setSize(10)
+    infolabel9 = Text(Point(width-TabSize/2, ButtonsVerticalSpacement*3.5),"0")
+    infolabel9.setFace('courier')
+    infolabel9.setSize(10)
+    infolabel10 = Text(Point(width-TabSize/2, ButtonsVerticalSpacement*4),"Trees:")
+    infolabel10.setFace('courier')
+    infolabel10.setSize(10)
+    global infolabel11
+    infolabel11 = Text(Point(width-TabSize/2, ButtonsVerticalSpacement*4.5),"0")
+    infolabel11.setFace('courier')
+    infolabel11.setSize(10)
+    
+    infolabel8.draw(win4)
+    infolabel9.draw(win4)
+    infolabel10.draw(win4)
+    infolabel11.draw(win4)
+    
+    for i in range(5): 
+        Obstacles.append(Obstacle(TabSize + (randint(5,95)/100)*(width-2*TabSize), (randint(5,95)/100)*height, randint(0,3), win4))
+        infolabel9.setText(len(Obstacles))
     global run_button_3
     run_button_3 = Button(win4, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Run", Run3random)
     run_button_3.deactivate()
+    
     while True:
         click = win4.checkMouse()
         if click != None:
@@ -349,6 +441,7 @@ def Playmode3random():
                     a = False
             if TabSize<click.getX()<width-TabSize and a:
                 Goal.append(Tree(click.getX(), click.getY(), win4))
+                infolabel11.setText(len(Goal))
                 run_button_3.activate()
             if run_button_3.clicked(click):
                 break
@@ -370,22 +463,34 @@ def Run3random(width,height):
                 Goal.remove(myrobot2.Sonar(Goal))
                 break
     while len(Goal) > 0:
-        Path.clear()
-        Findpath(Obstacles, myrobot2.getPos(), myrobot2.Sonar(Goal), win4, Path)
-        for point in Path:
-            while distance(point, myrobot2.Pos) > 1:
-                update(200)
-                Clock(point.getX(), point.getY(), myrobot2,win4)
-                if myrobot2.Stop(Goal) == 1:
-                    myrobot2.Grab(myrobot2.Sonar(Goal))
-                    Goal.remove(myrobot2.Sonar(Goal))
-                    break
+        if myrobot2.Battery >25:
+            Path.clear()
+            Findpath(Obstacles, myrobot2.getPos(), myrobot2.Sonar(Goal), win4, Path)
+            for point in Path:
+                while distance(point, myrobot2.Pos) > 1:
+                    update(200)
+                    Clock(point.getX(), point.getY(), myrobot2, win4)
+                    if myrobot2.Stop(Goal) == 1:
+                        myrobot2.Grab(myrobot2.Sonar(Goal))
+                        Goal.remove(myrobot2.Sonar(Goal))
+                        infolabel11.setText(len(Goal))
+                        break
+        else:
+            Path.clear()
+            Findpath(Obstacles, myrobot2.getPos(), myrobot2.Sonar(Chargers), win4, Path)
+            for point in Path:
+                while distance(point, myrobot2.Pos) > 1:
+                    update(200)
+                    Clock(point.getX(), point.getY(), myrobot2, win4)
+                    if myrobot2.Battery >=100:
+                        break
     print('-----------done-------------')
     infolabel7.draw(win4)
     clicktoclose = win4.getMouse()
     infolabel7.undraw()
     win4.close()
-      
+    win.close()
+    
 def Playmode4():
     GameMode = 4
     print('GameMode is now ', GameMode)
@@ -415,8 +520,26 @@ def Playmode4file():
     global run_button_4
     run_button_4 = Button(win7, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Run", Run4file)
     run_button_4.deactivate()
-    infolabel4.draw(win7)
-    infolabel5.draw(win7)
+
+    infolabel8 = Text(Point(width-TabSize/2, ButtonsVerticalSpacement*3),"Obstacles:")
+    infolabel8.setFace('courier')
+    infolabel8.setSize(10)
+    infolabel9 = Text(Point(width-TabSize/2, ButtonsVerticalSpacement*3.5),"0")
+    infolabel9.setFace('courier')
+    infolabel9.setSize(10)
+    infolabel10 = Text(Point(width-TabSize/2, ButtonsVerticalSpacement*4),"Trees:")
+    infolabel10.setFace('courier')
+    infolabel10.setSize(10)
+    global infolabel11
+    infolabel11 = Text(Point(width-TabSize/2, ButtonsVerticalSpacement*4.5),"0")
+    infolabel11.setFace('courier')
+    infolabel11.setSize(10)
+    
+    infolabel8.draw(win7)
+    infolabel9.draw(win7)
+    infolabel10.draw(win7)
+    infolabel11.draw(win7)
+    
     Lines = []
     f = open(filename, "r")
     for i in f:
@@ -425,8 +548,9 @@ def Playmode4file():
     for i in range(1, len(Lines)):
         PosX, PosY = Lines[i].split(" ")
         Goal.append(Tree(float(PosX)/100*width, float(PosY)/100*height, win7))
-        print(float(PosX)*width,float(PosY)*height)
+        infolabel11.setText(len(Goal))
     Generatefield(win7)
+    infolabel9.setText(len(Obstacles))
     run_button_4.activate()
     while True:
         click = win7.checkMouse()
@@ -450,40 +574,71 @@ def Run4file(width,height):
             if myrobot2.Stop(Goal) == 1:
                 myrobot2.Grab(myrobot2.Sonar(Goal))
                 Goal.remove(myrobot2.Sonar(Goal))
+                infolabel11.setText(len(Goal))
                 break
     while len(Goal) > 0:
-        Path.clear()
-        Findpath(Obstacles, myrobot2.getPos(), myrobot2.Sonar(Goal), win7, Path)
-        for point in Path:
-            while distance(point, myrobot2.Pos) > 1:
-                update(200)
-                Clock(point.getX(), point.getY(), myrobot2,win7)
-                if myrobot2.Stop(Goal) == 1:
-                    myrobot2.Grab(myrobot2.Sonar(Goal))
-                    Goal.remove(myrobot2.Sonar(Goal))
-                    break
-    
+        if myrobot2.Battery >25:
+            Path.clear()
+            Findpath(Obstacles, myrobot2.getPos(), myrobot2.Sonar(Goal), win7, Path)
+            for point in Path:
+                while distance(point, myrobot2.Pos) > 1:
+                    update(200)
+                    Clock(point.getX(), point.getY(), myrobot2, win7)
+                    if myrobot2.Stop(Goal) == 1:
+                        myrobot2.Grab(myrobot2.Sonar(Goal))
+                        Goal.remove(myrobot2.Sonar(Goal))
+                        infolabel11.setText(len(Goal))
+                        break
+        else:
+            Path.clear()
+            Findpath(Obstacles, myrobot2.getPos(), myrobot2.Sonar(Chargers), win7, Path)
+            for point in Path:
+                while distance(point, myrobot2.Pos) > 1:
+                    update(200)
+                    Clock(point.getX(), point.getY(), myrobot2, win7)
+                    if myrobot2.Battery >=100:
+                        break
     print('-----------done-------------')
     infolabel6.draw(win7)
     clicktoclose = win7.getMouse()
     infolabel6.undraw()
     win7.close()
+    win.close()
     
 def Playmode4random():
     print('-----------Playmode4random-------------')
+    win5.close()
     width = WindowWidth
     height = WindowHeight
     global win6
     win6 = GraphWin("Mode 4", width, height, autoflush=False)
     init2(width, height, win6)
-    for i in range(4): 
-        Obstacles.append(Obstacle(TabSize + (randint(0,100)/100)*(width-2*TabSize), (randint(0,100)/100)*height, randint(0,3), win6))
-    print(len(Obstacles))
+    
+    infolabel8 = Text(Point(width-TabSize/2, ButtonsVerticalSpacement*3),"Obstacles:")
+    infolabel8.setFace('courier')
+    infolabel8.setSize(10)
+    infolabel9 = Text(Point(width-TabSize/2, ButtonsVerticalSpacement*3.5),"0")
+    infolabel9.setFace('courier')
+    infolabel9.setSize(10)
+    infolabel10 = Text(Point(width-TabSize/2, ButtonsVerticalSpacement*4),"Trees:")
+    infolabel10.setFace('courier')
+    infolabel10.setSize(10)
+    global infolabel11
+    infolabel11 = Text(Point(width-TabSize/2, ButtonsVerticalSpacement*4.5),"0")
+    infolabel11.setFace('courier')
+    infolabel11.setSize(10)
+    
+    infolabel8.draw(win6)
+    infolabel9.draw(win6)
+    infolabel10.draw(win6)
+    infolabel11.draw(win6)
+    
+    for i in range(5): 
+        Obstacles.append(Obstacle(TabSize + (randint(5,95)/100)*(width-2*TabSize), (randint(5,95)/100)*height, randint(0,3), win6))
+        infolabel9.setText(len(Obstacles))
     global run_button_4
     run_button_4 = Button(win6, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Run", Run4random)
     run_button_4.deactivate()
-    infolabel4.draw(win)
-    infolabel5.draw(win)
     while True:
         click = win6.checkMouse()
         if click != None:
@@ -493,6 +648,7 @@ def Playmode4random():
                     a = False
             if TabSize<click.getX()<width-TabSize and a:
                 Goal.append(Tree(click.getX(), click.getY(), win6))
+                infolabel11.setText(len(Goal))
                 run_button_4.activate()
             if run_button_4.clicked(click):
                 break
@@ -504,6 +660,7 @@ def Run4random(width,height):
     infolabel7.setFace('courier')
     infolabel7.setSize(10)
     run_button_4.deactivate()
+    
     Findpath(Obstacles, myrobot2.getPos(), Goal[0], win6, Path)
     for point in Path:
         while distance(point, myrobot2.Pos) > 1:
@@ -514,21 +671,36 @@ def Run4random(width,height):
                 Goal.remove(myrobot2.Sonar(Goal))
                 break
     while len(Goal) > 0:
-        Path.clear()
-        Findpath(Obstacles, myrobot2.getPos(), myrobot2.Sonar(Goal), win6, Path)
-        for point in Path:
-            while distance(point, myrobot2.Pos) > 1:
-                update(200)
-                Clock(point.getX(), point.getY(), myrobot2,win6)
-                if myrobot2.Stop(Goal) == 1:
-                    myrobot2.Grab(myrobot2.Sonar(Goal))
-                    Goal.remove(myrobot2.Sonar(Goal))
-                    break
+        if myrobot2.Battery >25:
+            Path.clear()
+            Findpath(Obstacles, myrobot2.getPos(), myrobot2.Sonar(Goal), win6, Path)
+            for point in Path:
+                while distance(point, myrobot2.Pos) > 1:
+                    update(200)
+                    Clock(point.getX(), point.getY(), myrobot2, win6)
+                    if myrobot2.Stop(Goal) == 1:
+                        myrobot2.Grab(myrobot2.Sonar(Goal))
+                        Goal.remove(myrobot2.Sonar(Goal))
+                        infolabel11.setText(len(Goal))
+                        break
+        else:
+            Path.clear()
+            Findpath(Obstacles, myrobot2.getPos(), myrobot2.Sonar(Chargers), win6, Path)
+            for point in Path:
+                while distance(point, myrobot2.Pos) > 1:
+                    update(200)
+                    Clock(point.getX(), point.getY(), myrobot2, win6)
+                    if myrobot.Battery >=100:
+                        break
     print('-----------done-------------')
+    infolabel7 = Text(Point(width/2, height/2), "Click to Quit")
+    infolabel7.setFace('courier')
+    infolabel7.setSize(10)
     infolabel7.draw(win6)
     clicktoclose = win6.getMouse()
     infolabel7.undraw()
     win6.close()
+    win.close()
 
 def init2(w, h, win):
     
@@ -670,12 +842,6 @@ def init(win):
     myrobot = Harve(WindowWidth/2, WindowHeight, 100, 1, win, Chargers)
  
 def Reset():
-    '''
-    if type(win2) != "Point":
-        win2.close()
-    if type(win2) != "Point":
-        win3.close()'''
-        
     reset_button.deactivate()
     play1_button.activate()
     play2_button.activate()
@@ -691,7 +857,17 @@ def Reset():
     batterylabel.undraw()
     infolabel4.undraw()
     infolabel5.undraw()
+    infolabel12.undraw()
+    infolabel13.undraw()
     Dock.undraw()
+    
+    '''if type(myrobot) != 'undefined':  
+        myrobot.undraw()
+        myrobot.delete()
+    if type(myrobot2) != 'undefined':  
+        myrobot2.undraw()
+        myrobot2.delete()'''
+    
     myrobot.undraw()
     myrobot.delete()
     for i in Path:
@@ -735,7 +911,8 @@ def Clock(obsX, obsY, myrobot, win):       #Harve module after this
         for i in bars:
             i.setFill('red')
         bar1.draw(win)
-        
+    
+    #infolabel5.setText(len(Goal))
     myrobot.Charge()
     batteryinfo.setText(str(myrobot.getBattery()) +' %')
     
