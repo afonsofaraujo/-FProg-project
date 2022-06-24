@@ -128,9 +128,6 @@ def IsInside(x,y):
     return (TabSize < x < (WindowWidth - TabSize))
 
 def Generatefield(win):
-    
-    #Obstacle(TabSize + (randint(5,95)/100)*(width-2*TabSize), (randint(5,95)/100)*height, randint(0,3), win4)
-    
     '''generates obstacles in random positions and appends them in Obstacles list'''
     Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), randint(0, 2), win))
     while len(Obstacles) < ObstaclesNumber:
@@ -640,9 +637,9 @@ def Playmode4random():
     infolabel10.draw(win6)
     infolabel11.draw(win6)
     
-    for i in range(5): 
-        Obstacles.append(Obstacle(TabSize + (randint(5,95)/100)*(width-2*TabSize), (randint(5,95)/100)*height, randint(0,3), win6))
-        infolabel9.setText(len(Obstacles))
+    Generatefield(win6)
+    infolabel9.setText(len(Obstacles))
+    
     global run_button_4
     run_button_4 = Button(win6, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Run", Run4random)
     run_button_4.deactivate()
