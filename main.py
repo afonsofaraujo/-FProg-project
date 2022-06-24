@@ -72,6 +72,7 @@ def main():
     global play1_button
     global play2_button
     global play3_button
+    global play4_button
     global reset_button
     global quit_button
     global run_button
@@ -82,6 +83,7 @@ def main():
     play1_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*4), (2/3)*TabSize, ButtonsHeight, "Mode 1", Playmode1)
     play2_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*5), (2/3)*TabSize, ButtonsHeight, "Mode 2", Playmode2)
     play3_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*6), (2/3)*TabSize, ButtonsHeight, "Mode 3", Playmode3)
+    play4_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*7), (2/3)*TabSize, ButtonsHeight, "Mode 4", Playmode4)
     reset_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement), (2/3)*TabSize, ButtonsHeight, "Reset", Reset)
     quit_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Quit", Quit)
     run_button = Button(win, Point(TabSize/2, ButtonsVerticalSpacement*3), (2/3)*TabSize, ButtonsHeight, "Run", Run1)
@@ -93,6 +95,7 @@ def main():
     Buttons.append(play1_button)
     Buttons.append(play2_button)
     Buttons.append(play3_button)
+    Buttons.append(play4_button)
     Buttons.append(run_button)
 
     while True:
@@ -113,7 +116,7 @@ def CheckButtons(win):
 def IsInside(x,y,):
     return (TabSize < x < (WindowWidth - TabSize))
 
-def Generatefield():
+def Generatefield(win):
     Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), 0, win))
     Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), 0, win))
     Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), 1, win))
@@ -131,6 +134,7 @@ def Filereader():
     return int(width), int(height), filename
 
 def Playmode1():
+    print('-----------Playmode1file-------------')
     GameMode = 1
     run_button.changehandler(Run1)
     print('GameMode is now ', GameMode)
@@ -138,6 +142,7 @@ def Playmode1():
     play1_button.deactivate()
     play2_button.deactivate()
     play3_button.deactivate()
+    play4_button.deactivate()
     reset_button.deactivate()
     CheckButtons(win)
     infolabel1 = Text(Point(WindowWidth/2, WindowHeight/2-ButtonsVerticalSpacement*0.5), "Click to place ")
@@ -189,8 +194,9 @@ def Playmode2():
     play1_button.deactivate()
     play2_button.deactivate()
     play3_button.deactivate()
+    play4_button.deactivate()
 
-    Generatefield()
+    Generatefield(win)
     
     infolabel4.draw(win)
     infolabel5.draw(win)
@@ -213,31 +219,40 @@ def Playmode2():
 
 def Run2():
     print('-----------Run2-------------')
-    print(len(Obstacles), 'Obstacles')
-    print(len(Goal), 'Goals')
-    print(len(Path), 'Points')
-    # Lucas
+
+    Findpath(Obstacles, myrobot.getPos(), Goal[0], win, Path)
     for point in Path:
-        point.draw(win)
-
-
-    for i in Path:
-        while distance(i, myrobot.Pos) > 2:
-            update(30)
-            Clock(i.getX(), i.getY())
-        Path.remove(i)
-
+        while distance(point, myrobot.Pos) > 1:
+            update(200)
+            Clock(point.getX(), point.getY(),myrobot,win)
+            if myrobot.Stop(Goal) == 1:
+                myrobot.Grab(myrobot.Sonar(Goal))
+                Goal.remove(myrobot.Sonar(Goal))
+                break
+    while len(Goal) > 0:
+        Path.clear()
+        Findpath(Obstacles, myrobot.getPos(), myrobot.Sonar(Goal), win, Path)
+        for point in Path:
+            while distance(point, myrobot.Pos) > 1:
+                update(200)
+                Clock(point.getX(), point.getY(), myrobot,win)
+                if myrobot.Stop(Goal) == 1:
+                    myrobot.Grab(myrobot.Sonar(Goal))
+                    Goal.remove(myrobot.Sonar(Goal))
+                    break
     print('-----------done-------------')
+    infolabel3.draw(win)
     clicktoreset = win.getMouse()
+    infolabel3.undraw()
     Reset()
-
 
 def Playmode3():
     GameMode = 3
     print('GameMode is now ', GameMode)
-    play2_button.deactivate()
     play1_button.deactivate()
+    play2_button.deactivate()
     play3_button.deactivate()
+    play4_button.deactivate()
     win2 = GraphWin("Choose", WindowWidth/2, WindowHeight/2, autoflush=False)
     button_file = Button(win2, Point(WindowWidth/4, WindowHeight*(1/6)), 2*TabSize, 2*ButtonsHeight, "Read from a file", Playmode3file)
     button_random = Button(win2, Point(WindowWidth/4, WindowHeight*(2/6)), 2*TabSize, 2*ButtonsHeight, "Random map", Playmode3random)
@@ -247,7 +262,6 @@ def Playmode3():
         CheckButtons(win2)
 
 def Playmode3file():
-    #win2.close()        tratar depois
     print('-----------Playmode3file-------------')
     Buttons.clear()
     width, height, filename = Filereader()
@@ -256,7 +270,6 @@ def Playmode3file():
     init2(width, height, win3)
     global run_button_2
     run_button_2 = Button(win3, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Run", Run3file)
-    #quit_button_2 = Button(win2, Point(TabSize/2, ButtonsVerticalSpacement), (2/3)*TabSize, ButtonsHeight, "Quit", Quit2)
     run_button_2.deactivate()
     Lines = []
     f = open(filename, "r")
@@ -266,7 +279,9 @@ def Playmode3file():
         Type, PosX, PosY = Lines[i].split(" ")
         Obstacles.append(Obstacle(TabSize + (float(PosX)/100)*(width-2*TabSize), (float(PosY)/100)*height, int(Type), win3))
     f.close()
-    
+    Generatefield(win3)
+    infolabel4.draw(win3)
+    infolabel5.draw(win3)
     while True:
         click = win3.checkMouse()
         if click != None:
@@ -307,7 +322,6 @@ def Run3file(width,height):
                     myrobot2.Grab(myrobot2.Sonar(Goal))
                     Goal.remove(myrobot2.Sonar(Goal))
                     break
-    
     print('-----------done-------------')
     infolabel6.draw(win3)
     clicktoclose = win3.getMouse()
@@ -315,24 +329,17 @@ def Run3file(width,height):
     win3.close()
     
 def Playmode3random():
-    #win2.close()
     print('-----------Playmode3random-------------')
     width = WindowWidth
     height = WindowHeight
-
     global win4
     win4 = GraphWin("Mode 3", width, height, autoflush=False)
     init2(width, height, win4)
-    
     for i in range(4): 
         Obstacles.append(Obstacle(TabSize + (randint(0,100)/100)*(width-2*TabSize), (randint(0,100)/100)*height, randint(0,3), win4))
-    print(len(Obstacles))
-
     global run_button_3
     run_button_3 = Button(win4, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Run", Run3random)
-    #quit_button_2 = Button(win2, Point(TabSize/2, ButtonsVerticalSpacement), (2/3)*TabSize, ButtonsHeight, "Quit", Quit2)
     run_button_3.deactivate()
-    
     while True:
         click = win4.checkMouse()
         if click != None:
@@ -352,7 +359,6 @@ def Run3random(width,height):
     infolabel7 = Text(Point(width/2, height/2), "Click to Quit")
     infolabel7.setFace('courier')
     infolabel7.setSize(10)
-    
     run_button_3.deactivate()
     Findpath(Obstacles, myrobot2.getPos(), Goal[0], win4, Path)
     for point in Path:
@@ -374,13 +380,156 @@ def Run3random(width,height):
                     myrobot2.Grab(myrobot2.Sonar(Goal))
                     Goal.remove(myrobot2.Sonar(Goal))
                     break
-    
     print('-----------done-------------')
     infolabel7.draw(win4)
     clicktoclose = win4.getMouse()
     infolabel7.undraw()
     win4.close()
       
+def Playmode4():
+    GameMode = 4
+    print('GameMode is now ', GameMode)
+    play1_button.deactivate()
+    play2_button.deactivate()
+    play3_button.deactivate()
+    play4_button.deactivate()
+    global win5
+    win5 = GraphWin("Choose", WindowWidth/2, WindowHeight/2, autoflush=False)
+    button_file = Button(win5, Point(WindowWidth/4, WindowHeight*(1/6)), 2*TabSize, 2*ButtonsHeight, "Read from a file", Playmode4file)
+    button_random = Button(win5, Point(WindowWidth/4, WindowHeight*(2/6)), 2*TabSize, 2*ButtonsHeight, "Random map", Playmode4random)
+    Buttons.append(button_file)
+    Buttons.append(button_random)
+    while win5 != 0:
+        CheckButtons(win5)
+
+def Playmode4file():
+    print('-----------Playmode4file-------------')
+    win5.close()
+    Buttons.clear()
+    width=WindowWidth
+    height=WindowHeight
+    filename = fd.askopenfilename()
+    global win7
+    win7 = GraphWin("Mode 4", width, height, autoflush=False)
+    init2(width, height, win7)
+    global run_button_4
+    run_button_4 = Button(win7, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Run", Run4file)
+    run_button_4.deactivate()
+    infolabel4.draw(win7)
+    infolabel5.draw(win7)
+    Lines = []
+    f = open(filename, "r")
+    for i in f:
+        Lines.append(i)
+    f.close()
+    for i in range(1, len(Lines)):
+        PosX, PosY = Lines[i].split(" ")
+        Goal.append(Tree(float(PosX)/100*width, float(PosY)/100*height, win7))
+        print(float(PosX)*width,float(PosY)*height)
+    Generatefield(win7)
+    run_button_4.activate()
+    while True:
+        click = win7.checkMouse()
+        if click != None:
+            if run_button_4.clicked(click):
+                run_button_4.deactivate()
+                break
+    Run4file(width,height)
+
+def Run4file(width,height):
+    print('-----------Run4file-------------')
+    infolabel6 = Text(Point(width/2, height/2), "Click to Quit")
+    infolabel6.setFace('courier')
+    infolabel6.setSize(10)
+    run_button_4.deactivate()
+    Findpath(Obstacles, myrobot2.getPos(), Goal[0], win7, Path)
+    for point in Path:
+        while distance(point, myrobot2.Pos) > 1:
+            update(200)
+            Clock(point.getX(), point.getY(),myrobot2,win7)
+            if myrobot2.Stop(Goal) == 1:
+                myrobot2.Grab(myrobot2.Sonar(Goal))
+                Goal.remove(myrobot2.Sonar(Goal))
+                break
+    while len(Goal) > 0:
+        Path.clear()
+        Findpath(Obstacles, myrobot2.getPos(), myrobot2.Sonar(Goal), win7, Path)
+        for point in Path:
+            while distance(point, myrobot2.Pos) > 1:
+                update(200)
+                Clock(point.getX(), point.getY(), myrobot2,win7)
+                if myrobot2.Stop(Goal) == 1:
+                    myrobot2.Grab(myrobot2.Sonar(Goal))
+                    Goal.remove(myrobot2.Sonar(Goal))
+                    break
+    
+    print('-----------done-------------')
+    infolabel6.draw(win7)
+    clicktoclose = win7.getMouse()
+    infolabel6.undraw()
+    win7.close()
+    
+def Playmode4random():
+    print('-----------Playmode4random-------------')
+    width = WindowWidth
+    height = WindowHeight
+    global win6
+    win6 = GraphWin("Mode 4", width, height, autoflush=False)
+    init2(width, height, win6)
+    for i in range(4): 
+        Obstacles.append(Obstacle(TabSize + (randint(0,100)/100)*(width-2*TabSize), (randint(0,100)/100)*height, randint(0,3), win6))
+    print(len(Obstacles))
+    global run_button_4
+    run_button_4 = Button(win6, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Run", Run4random)
+    run_button_4.deactivate()
+    infolabel4.draw(win)
+    infolabel5.draw(win)
+    while True:
+        click = win6.checkMouse()
+        if click != None:
+            a = True
+            for i in Obstacles:
+                if distance(Point(i.PosX,i.PosY), Point(click.getX(), click.getY())) < 20:
+                    a = False
+            if TabSize<click.getX()<width-TabSize and a:
+                Goal.append(Tree(click.getX(), click.getY(), win6))
+                run_button_4.activate()
+            if run_button_4.clicked(click):
+                break
+    Run4random(width,height)
+
+def Run4random(width,height):
+    print('-----------Run4random-------------')
+    infolabel7 = Text(Point(width/2, height/2), "Click to Quit")
+    infolabel7.setFace('courier')
+    infolabel7.setSize(10)
+    run_button_4.deactivate()
+    Findpath(Obstacles, myrobot2.getPos(), Goal[0], win6, Path)
+    for point in Path:
+        while distance(point, myrobot2.Pos) > 1:
+            update(200)
+            Clock(point.getX(), point.getY(),myrobot2,win6)
+            if myrobot2.Stop(Goal) == 1:
+                myrobot2.Grab(myrobot2.Sonar(Goal))
+                Goal.remove(myrobot2.Sonar(Goal))
+                break
+    while len(Goal) > 0:
+        Path.clear()
+        Findpath(Obstacles, myrobot2.getPos(), myrobot2.Sonar(Goal), win6, Path)
+        for point in Path:
+            while distance(point, myrobot2.Pos) > 1:
+                update(200)
+                Clock(point.getX(), point.getY(), myrobot2,win6)
+                if myrobot2.Stop(Goal) == 1:
+                    myrobot2.Grab(myrobot2.Sonar(Goal))
+                    Goal.remove(myrobot2.Sonar(Goal))
+                    break
+    print('-----------done-------------')
+    infolabel7.draw(win6)
+    clicktoclose = win6.getMouse()
+    infolabel7.undraw()
+    win6.close()
+
 def init2(w, h, win):
     
     b = (50/WindowWidth) #ratio for ButtonsVerticalSpacement
@@ -531,6 +680,7 @@ def Reset():
     play1_button.activate()
     play2_button.activate()
     play3_button.activate()
+    play4_button.activate()
     run_button.deactivate()
     rec1.undraw()
     rec2.undraw()

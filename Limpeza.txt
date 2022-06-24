@@ -1,0 +1,4 @@
+Pontos de maior sujidade:
+62.5 62.5
+25.0 40.0
+62.5 30.0
