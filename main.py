@@ -36,7 +36,7 @@ ButtonsVerticalSpacement = 50
 ButtonsHeight = 30
 ObstaclesSize = 5  # Radius
 ObstaclesNumber = 5  # Number of obstacles to generate
-ObstacleDistance = 20 # Minimum distance between 2 obstacles
+MaxObstacleDistance = 20 # Minimum distance between 2 obstacles
 
 # Global Objects
 win = GraphWin("GAME", WindowWidth, WindowHeight, autoflush=False)
@@ -128,14 +128,17 @@ def IsInside(x,y):
     return (TabSize < x < (WindowWidth - TabSize))
 
 def Generatefield(win):
+    
+    #Obstacle(TabSize + (randint(5,95)/100)*(width-2*TabSize), (randint(5,95)/100)*height, randint(0,3), win4)
+    
     '''generates obstacles in random positions and appends them in Obstacles list'''
     Obstacles.append(Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), randint(0, 2), win))
     while len(Obstacles) < ObstaclesNumber:
         valid = True
         NewObstacle = Obstacle(randint(TabSize+20, 780-TabSize), randint(TabSize+20, 580-TabSize), randint(0, 2), win)
         for Obstaclei in Obstacles:
-            ObstacleDistance = sqrt( ((NewObstacle.PosX-Obstaclei.PosX)**2)+((NewObstacle.PosY-Obstaclei.PosY)**2) )
-            if ObstacleDistance < (NewObstacle.radius + Obstaclei.radius):
+            ObstacleDistance = sqrt( ((NewObstacle.PosX-Obstaclei.PosX)**2) + ((NewObstacle.PosY-Obstaclei.PosY)**2) )
+            if ObstacleDistance < (NewObstacle.radius + Obstaclei.radius + MaxObstacleDistance):
                 valid = False
                 break;
         if valid:
@@ -430,9 +433,9 @@ def Playmode3random():
     infolabel10.draw(win4)
     infolabel11.draw(win4)
     
-    for i in range(5): 
-        Obstacles.append(Obstacle(TabSize + (randint(5,95)/100)*(width-2*TabSize), (randint(5,95)/100)*height, randint(0,3), win4))
-        infolabel9.setText(len(Obstacles))
+    Generatefield(win4)
+    
+    infolabel9.setText(len(Obstacles))
     global run_button_3
     run_button_3 = Button(win4, Point(TabSize/2, ButtonsVerticalSpacement*2), (2/3)*TabSize, ButtonsHeight, "Run", Run3random)
     run_button_3.deactivate()
