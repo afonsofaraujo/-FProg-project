@@ -1,12 +1,14 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Apr  4 18:06:07 2022
-
-@author: Afonso Araújo
-"""
+###########################################################################################
+#   2º Semestre do 1º ano do curso de Engenharia Mecânica - Instituoto Superior Técnico   #
+#   Unidade Curricular do Projeto - Fundamentos da Programação                            #
+#   Nome do Projeto: Robô da Fruta                                                        #
+#   Autores: Afonso Araújo (102685) e Lucas Feijó (103968)                                #
+#   Grupo: G45                                                                            #
+#   Data: 25.06.2022                                                                      #
+#   Módulo: Button                                                                        #
+###########################################################################################
 
 from graphics import *
-
 
 class Button():
     """ Creates a Button object with methods activate(), deactivate(),

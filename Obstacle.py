@@ -1,12 +1,14 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed May 25 19:29:36 2022
-
-@author: Afonso Araújo
-"""
+###########################################################################################
+#   2º Semestre do 1º ano do curso de Engenharia Mecânica - Instituoto Superior Técnico   #
+#   Unidade Curricular do Projeto - Fundamentos da Programação                            #
+#   Nome do Projeto: Robô da Fruta                                                        #
+#   Autores: Afonso Araújo (102685) e Lucas Feijó (103968)                                #
+#   Grupo: G45                                                                            #
+#   Data: 25.06.2022                                                                      #
+#   Módulo: Obstacle                                                                      #
+###########################################################################################
 
 from graphics import *
-
 
 class Obstacle:
     def __init__(self, posX, posY, Type, win):

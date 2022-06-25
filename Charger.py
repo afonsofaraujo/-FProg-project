@@ -1,18 +1,20 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue May 17 11:13:20 2022
-
-@author: Afonso Araújo
-"""
+###########################################################################################
+#   2º Semestre do 1º ano do curso de Engenharia Mecânica - Instituoto Superior Técnico   #
+#   Unidade Curricular do Projeto - Fundamentos da Programação                            #
+#   Nome do Projeto: Robô da Fruta                                                        #
+#   Autores: Afonso Araújo (102685) e Lucas Feijó (103968)                                #
+#   Grupo: G45                                                                            #
+#   Data: 25.06.2022                                                                      #
+#   Módulo: Charger                                                                       #
+###########################################################################################
 
 from graphics import *
 
-
 class Charger:
-    def __init__(self, PosX, PosY, win, mx, my):
+    def __init__(self, PosX, PosY, win):
         self.PosX = PosX
         self.PosY = PosY
-        self.body = Rectangle(Point(PosX-20*mx, PosY+20*my), Point(PosX+20*mx, PosY-20*my))
+        self.body = Rectangle(Point(PosX-20, PosY+20), Point(PosX+20, PosY-20))
         self.body.setFill('yellow')
         self.body.draw(win)
 

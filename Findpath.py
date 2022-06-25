@@ -1,9 +1,12 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jun 20 17:50:38 2022
-
-@author: Afonso Araújo
-"""
+###########################################################################################
+#   2º Semestre do 1º ano do curso de Engenharia Mecânica - Instituoto Superior Técnico   #
+#   Unidade Curricular do Projeto - Fundamentos da Programação                            #
+#   Nome do Projeto: Robô da Fruta                                                        #
+#   Autores: Afonso Araújo (102685) e Lucas Feijó (103968)                                #
+#   Grupo: G45                                                                            #
+#   Data: 25.06.2022                                                                      #
+#   Módulo: Findpath                                                                      #
+###########################################################################################
 
 import math
 import time
@@ -18,7 +21,7 @@ def distance(a, b):
 
 def sensor(ang, D, center, Obstacles):
 
-    # angulo diz para qual direção o sensor anda
+    # ângulo diz para qual direção o sensor anda
     # a D diz quantos passos o sensor da na direção dita pelo angulo
     # o centro diz da onde o sensor sai
     # lista de obstáculos
@@ -104,7 +107,6 @@ def calcular_angulo(Obstacles, Pinicial, goal):
     # CASO O ROBO ESTEJA EM ROTA DE COLISÃO
     for i in Obstacles:
         if distance(Pinicial, i) < 36:
-            print("CUIDADO")
             if (i.getX()-Pinicial.getX()) == 0:
                 angulo0 = math.pi/2
             else:
