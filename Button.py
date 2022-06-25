@@ -1,5 +1,5 @@
 ###########################################################################################
-#   2º Semestre do 1º ano do curso de Engenharia Mecânica - Instituoto Superior Técnico   #
+#   2º Semestre do 1º ano do curso de Engenharia Mecânica - Instituto Superior Técnico    #
 #   Unidade Curricular do Projeto - Fundamentos da Programação                            #
 #   Nome do Projeto: Robô da Fruta                                                        #
 #   Autores: Afonso Araújo (102685) e Lucas Feijó (103968)                                #
@@ -11,8 +11,7 @@
 from graphics import *
 
 class Button():
-    """ Creates a Button object with methods activate(), deactivate(),
-        and clicked(pt) """
+    """ Creates a Button object"""
 
     def __init__(self, win, center, width, height, label, handler):
         """ Create button object which consists of a Rectangle centered at 'center'

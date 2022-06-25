@@ -1,5 +1,5 @@
 ###########################################################################################
-#   2º Semestre do 1º ano do curso de Engenharia Mecânica - Instituoto Superior Técnico   #
+#   2º Semestre do 1º ano do curso de Engenharia Mecânica - Instituto Superior Técnico    #
 #   Unidade Curricular do Projeto - Fundamentos da Programação                            #
 #   Nome do Projeto: Robô da Fruta                                                        #
 #   Autores: Afonso Araújo (102685) e Lucas Feijó (103968)                                #
